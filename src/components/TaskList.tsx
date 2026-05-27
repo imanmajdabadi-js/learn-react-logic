@@ -23,13 +23,29 @@ const TaskList = () => {
   };
 
   const handleDeleteTask = (taskId: string, categoryId: string) => {
-    setTaskList((prev) =>
-      prev.map((item) =>
-        item.id === categoryId
-          ? { ...item, tasks: item.tasks.filter((item) => item.taskId !== taskId) }
-          : item
-      )
+    const currentState = taskList;
+    const foundedCategory = currentState?.find((item) => item.id === categoryId);
+
+    if (!foundedCategory) return;
+
+    const updatedTasks = foundedCategory?.tasks.filter((item) => item.taskId !== taskId);
+
+    const updatedCategory = {
+      ...foundedCategory,
+      tasks: updatedTasks,
+    };
+
+    const newTaskList = currentState?.map((item) =>
+      item.id === categoryId ? updatedCategory : item
     );
+    setTaskList(newTaskList);
+    // setTaskList((prev) =>
+    //   prev.map((item) =>
+    //     item.id === categoryId
+    //       ? { ...item, tasks: item.tasks.filter((item) => item.taskId !== taskId) }
+    //       : item
+    //   )
+    // );
   };
 
   const handleAddTask = (categoryId: string, textTask: string) => {
