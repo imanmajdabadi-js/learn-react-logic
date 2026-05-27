@@ -1,6 +1,6 @@
 import type { TaskListProps } from '../types';
 
-export function showTask() {
+export function showData() {
   const saveData = localStorage.getItem('tasks');
   const taskListArr: TaskListProps[] = [
     {
@@ -8,13 +8,13 @@ export function showTask() {
       id: '1',
       tasks: [
         {
-          taskId: '1',
+          taskId: '10',
           text: 'Making Bed',
           isCompleted: false,
         },
 
         {
-          taskId: '2',
+          taskId: '20',
           text: 'Wash Dishes',
           isCompleted: true,
         },

@@ -5,7 +5,7 @@ export interface TaskProps {
 }
 
 export interface Tasks {
-  task: TaskProps[];
+  tasks: TaskProps[];
 }
 
 export interface TaskListProps {

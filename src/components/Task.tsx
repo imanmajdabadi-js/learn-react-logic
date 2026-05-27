@@ -1,22 +1,19 @@
-import { FaEdit } from 'react-icons/fa';
-import { FaDeleteLeft } from 'react-icons/fa6';
-import { ImCheckboxChecked, ImCheckboxUnchecked } from 'react-icons/im';
-import type { Tasks } from '../types';
+import type { TaskProps } from '../types';
+import TaskActions from './TaskActions';
 
-const Task = ({ task }: Tasks) => {
+interface TaskPropsItem {
+  tasks: TaskProps[];
+  onDeleteTask: (taskId: string) => void;
+}
+
+const Task = ({ tasks, onDeleteTask }: TaskPropsItem) => {
   return (
     <div>
-      {task?.map((item) => {
+      {tasks?.map((item) => {
         return (
           <div className="flex items-center gap-4 p-4 w-64" key={item.taskId}>
             <p className="text-sm">{item.text}</p>
-            <FaEdit className="cursor-pointer" size={18} color="gray" />
-            {item.isCompleted ? (
-              <ImCheckboxChecked className="cursor-pointer" size={18} color="green" />
-            ) : (
-              <ImCheckboxUnchecked className="cursor-pointer" size={18} color="green" />
-            )}
-            <FaDeleteLeft className="cursor-pointer" size={18} color="red" />
+            <TaskActions onDelete={() => onDeleteTask(item.taskId)} />
           </div>
         );
       })}
