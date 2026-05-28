@@ -2,7 +2,10 @@ export interface TaskProps {
   taskId: string;
   text: string;
   isCompleted: boolean;
+  mode: Mode;
 }
+
+export type Mode = 'edit' | 'view';
 
 export interface Tasks {
   tasks: TaskProps[];

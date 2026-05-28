@@ -1,30 +1,29 @@
 import type { TaskProps } from '../types';
 import Input from './Input';
-import TaskActions, { type Mode } from './TaskActions';
+import TaskActions from './TaskActions';
 
-interface TaskPropsItem {
+interface TaskItemsPropsItem {
   tasks: TaskProps[];
   onDeleteTask: (taskId: string) => void;
-  onEdit: () => void;
-  mode: Mode;
+  onEdit: (taskId: string) => void;
   onSave: () => void;
 }
 
-const Task = ({ tasks, onDeleteTask, onEdit, mode, onSave }: TaskPropsItem) => {
+const TaskItems = ({ tasks, onDeleteTask, onEdit, onSave }: TaskItemsPropsItem) => {
   return (
     <div>
       {tasks?.map((item) => {
         return (
           <div className="flex items-center gap-4 p-4  justify-around" key={item.taskId}>
-            {mode === 'edit' ? (
+            {item.mode === 'edit' ? (
               <Input className="w-32" value="" onChange={() => {}} />
             ) : (
               <p className="text-sm">{item.text}</p>
             )}
             <TaskActions
               onSave={onSave}
-              mode={mode}
-              onEdit={onEdit}
+              mode={item.mode}
+              onEdit={() => onEdit(item.taskId)}
               onDelete={() => onDeleteTask(item.taskId)}
             />
           </div>
@@ -34,4 +33,4 @@ const Task = ({ tasks, onDeleteTask, onEdit, mode, onSave }: TaskPropsItem) => {
   );
 };
 
-export default Task;
+export default TaskItems;

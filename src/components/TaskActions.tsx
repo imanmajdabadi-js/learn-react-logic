@@ -1,9 +1,8 @@
 import { FaEdit } from 'react-icons/fa';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import { ImCheckboxChecked, ImCheckboxUnchecked } from 'react-icons/im';
+import type { Mode } from '../types';
 import Button from './Button';
-
-export type Mode = 'edit' | 'save' | '';
 
 interface TaskActionsProps {
   isCompleted?: boolean;

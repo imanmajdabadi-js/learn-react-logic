@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
-import type { TaskListProps } from '../types';
+import type { Mode, TaskListProps, TaskProps } from '../types';
 import { saveData, showData } from '../utils/SaveShowData';
-import Task from './Task';
-import type { Mode } from './TaskActions';
 import TaskCategoryAdd from './TaskCategoryAdd';
 import TaskForm from './TaskForm';
+import TaskItems from './TaskItems';
 
 const TaskList = () => {
-  const [mode, setMode] = useState<Mode>('');
   const [taskList, setTaskList] = useState<TaskListProps[]>(showData);
 
   useEffect(() => {
@@ -44,10 +42,11 @@ const TaskList = () => {
   };
 
   const handleAddTask = (categoryId: string, textTask: string) => {
-    const newTask = {
+    const newTask: TaskProps = {
       taskId: crypto.randomUUID(),
       text: textTask,
       isCompleted: true,
+      mode: 'view',
     };
     const foundedCategory = taskList?.find((item) => item.id === categoryId);
     if (!foundedCategory) {
@@ -67,14 +66,26 @@ const TaskList = () => {
     // );
   };
 
-  const handleEditMode = () => {
-    setMode('edit');
+  const handleEditMode = (taskId: string, categoryId: string) => {
+    console.log(taskId, 'taskId', categoryId, 'categoryId');
+    const foundedCategory = taskList.find((item) => item.id === categoryId);
+    if (foundedCategory) {
+      const updatedTask = foundedCategory?.tasks.map((item) =>
+        item.taskId === taskId ? { ...item, mode: 'edit' as Mode } : item
+      );
+      // const copyCategory = { ...foundedCategory, tasks: updatedTask };
+      // setMode('edit');
+      const copyTaskList = taskList.map((item) =>
+        item.id === categoryId ? { ...item, tasks: updatedTask } : item
+      );
+      setTaskList(copyTaskList);
+    }
   };
 
   const handleSaveMode = () => {
     console.log('save');
 
-    setMode('save');
+    // setMode('save');
   };
 
   return (
@@ -86,10 +97,9 @@ const TaskList = () => {
               <TaskForm onAddTask={(textTask) => handleAddTask(item.id, textTask)} />
               <div className="bg-white rounded-3xl shadow-2xl ">
                 <p className="text-center font-bold">{item.category}</p>
-                <Task
+                <TaskItems
                   onSave={handleSaveMode}
-                  mode={mode}
-                  onEdit={handleEditMode}
+                  onEdit={(taskId) => handleEditMode(taskId, item.id)}
                   onDeleteTask={(taskId) => handleDeleteTask(taskId, item.id)}
                   tasks={item.tasks}
                 />
