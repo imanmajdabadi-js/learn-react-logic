@@ -8,7 +8,7 @@ interface ButtonProps {
 const Button = ({ onClick, disabled, text, background }: ButtonProps) => {
   return (
     <button
-      disabled={disabled}
+      disabled={!disabled}
       onClick={onClick}
       className={`px-4 cursor-pointer py-1.5 rounded-md  ${background} text-sm text-white`}
     >
