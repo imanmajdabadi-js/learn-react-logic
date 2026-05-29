@@ -39,28 +39,17 @@ const TaskList = () => {
       isCompleted: true,
       mode: 'view',
     };
-    const foundedCategory = taskList?.find((item) => item.id === categoryId);
-    if (!foundedCategory) {
-      return;
-    }
-    const updateTasks = [...foundedCategory.tasks, newTask];
-    const updatedList = taskList.map((item) =>
-      item.id === categoryId ? { ...item, tasks: updateTasks } : item
+    setTaskList((prev) =>
+      prev.map((item) =>
+        item.id === categoryId ? { ...item, tasks: [...item.tasks, newTask] } : item
+      )
     );
-
-    setTaskList(updatedList);
-    saveData(updatedList);
-    // setTaskList((prev) =>
-    //   prev?.map((item) =>
-    //     item.id === categoryId ? { ...item, tasks: [...item.tasks, newTask] } : item
-    //   )
-    // );
   };
 
   const handleEditMode = (taskId: string, categoryId: string) => {
     setTaskList((prev) =>
       prev.map((item) =>
-        item.id == categoryId
+        item.id === categoryId
           ? {
               ...item,
               tasks: item.tasks.map((item) =>
@@ -70,20 +59,9 @@ const TaskList = () => {
           : item
       )
     );
-    // const foundedCategory = taskList.find((item) => item.id === categoryId);
-    // if (foundedCategory) {
-    //   const updatedTask = foundedCategory?.tasks.map((item) =>
-    //     item.taskId === taskId ? { ...item, mode: 'edit' as Mode } : item
-    //   );
-
-    //   const copyTaskList = taskList.map((item) =>
-    //     item.id === categoryId ? { ...item, tasks: updatedTask } : item
-    //   );
-    //   setTaskList(copyTaskList);
-    // }
   };
 
-  const handleSaveMode = (taskId: string, categoryId: string) => {
+  const handleSaveMode = (taskId: string, categoryId: string, value: string) => {
     setTaskList((prev) =>
       prev.map((item) =>
         item.id === categoryId
@@ -91,23 +69,8 @@ const TaskList = () => {
               ...item,
               tasks: item.tasks.map((item) =>
                 item.taskId === taskId
-                  ? { ...item, mode: item.text === '' ? 'edit' : ('view' as Mode) }
+                  ? { ...item, text: value, mode: value === '' ? 'edit' : ('view' as Mode) }
                   : item
-              ),
-            }
-          : item
-      )
-    );
-  };
-
-  const handleInputEditChange = (value: string, taskId: string, categoryId: string) => {
-    setTaskList((prev) =>
-      prev.map((item) =>
-        item.id === categoryId
-          ? {
-              ...item,
-              tasks: item.tasks.map((item) =>
-                item.taskId === taskId ? { ...item, text: value } : item
               ),
             }
           : item
@@ -140,7 +103,7 @@ const TaskList = () => {
                 item.taskId === taskId
                   ? {
                       ...item,
-                      isCompleted: item.mode !== 'view' ? !item.isCompleted : item.isCompleted,
+                      isCompleted: item.mode === 'edit' ? !item.isCompleted : item.isCompleted,
                     }
                   : item
               ),
@@ -159,10 +122,9 @@ const TaskList = () => {
               <div className="bg-white rounded-3xl shadow-2xl ">
                 <p className="text-center font-bold">{item.category}</p>
                 <TaskItems
-                  onToggleCompledtedd={(taskId) => handleCompleted(taskId, item.id)}
+                  onToggleCompledted={(taskId) => handleCompleted(taskId, item.id)}
                   onCancel={(taskId) => handleCancelEdit(taskId, item.id)}
-                  onInputChange={(value, taskId) => handleInputEditChange(value, taskId, item.id)}
-                  onSave={(taskId) => handleSaveMode(taskId, item.id)}
+                  onSave={(taskId, value) => handleSaveMode(taskId, item.id, value)}
                   onEdit={(taskId) => handleEditMode(taskId, item.id)}
                   onDeleteTask={(taskId) => handleDeleteTask(taskId, item.id)}
                   tasks={item.tasks}
