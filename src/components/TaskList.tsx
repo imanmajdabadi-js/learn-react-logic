@@ -23,15 +23,6 @@ const TaskList = () => {
   };
 
   const handleDeleteTask = (taskId: string, categoryId: string) => {
-    // const foundedCategory = taskList?.find((item) => item.id === categoryId);
-    // if (!foundedCategory) return;
-    // const updatedTasks = foundedCategory?.tasks.filter((item) => item.taskId !== taskId);
-    // const updatedCategory = {
-    //   ...foundedCategory,
-    //   tasks: updatedTasks,
-    // };
-    // const newTaskList = taskList?.map((item) => (item.id === categoryId ? updatedCategory : item));
-    // setTaskList(newTaskList);
     setTaskList((prev) =>
       prev.map((item) =>
         item.id === categoryId
@@ -67,27 +58,97 @@ const TaskList = () => {
   };
 
   const handleEditMode = (taskId: string, categoryId: string) => {
-    console.log(taskId, 'taskId', categoryId, 'categoryId');
-    const foundedCategory = taskList.find((item) => item.id === categoryId);
-    if (foundedCategory) {
-      const updatedTask = foundedCategory?.tasks.map((item) =>
-        item.taskId === taskId ? { ...item, mode: 'edit' as Mode } : item
-      );
-      // const copyCategory = { ...foundedCategory, tasks: updatedTask };
-      // setMode('edit');
-      const copyTaskList = taskList.map((item) =>
-        item.id === categoryId ? { ...item, tasks: updatedTask } : item
-      );
-      setTaskList(copyTaskList);
-    }
+    setTaskList((prev) =>
+      prev.map((item) =>
+        item.id == categoryId
+          ? {
+              ...item,
+              tasks: item.tasks.map((item) =>
+                item.taskId === taskId ? { ...item, mode: 'edit' as Mode } : item
+              ),
+            }
+          : item
+      )
+    );
+    // const foundedCategory = taskList.find((item) => item.id === categoryId);
+    // if (foundedCategory) {
+    //   const updatedTask = foundedCategory?.tasks.map((item) =>
+    //     item.taskId === taskId ? { ...item, mode: 'edit' as Mode } : item
+    //   );
+
+    //   const copyTaskList = taskList.map((item) =>
+    //     item.id === categoryId ? { ...item, tasks: updatedTask } : item
+    //   );
+    //   setTaskList(copyTaskList);
+    // }
   };
 
-  const handleSaveMode = () => {
-    console.log('save');
-
-    // setMode('save');
+  const handleSaveMode = (taskId: string, categoryId: string) => {
+    setTaskList((prev) =>
+      prev.map((item) =>
+        item.id === categoryId
+          ? {
+              ...item,
+              tasks: item.tasks.map((item) =>
+                item.taskId === taskId
+                  ? { ...item, mode: item.text === '' ? 'edit' : ('view' as Mode) }
+                  : item
+              ),
+            }
+          : item
+      )
+    );
   };
 
+  const handleInputEditChange = (value: string, taskId: string, categoryId: string) => {
+    setTaskList((prev) =>
+      prev.map((item) =>
+        item.id === categoryId
+          ? {
+              ...item,
+              tasks: item.tasks.map((item) =>
+                item.taskId === taskId ? { ...item, text: value } : item
+              ),
+            }
+          : item
+      )
+    );
+  };
+
+  const handleCancelEdit = (taskId: string, categoryId: string) => {
+    setTaskList((prev) =>
+      prev.map((item) =>
+        item.id === categoryId
+          ? {
+              ...item,
+              tasks: item.tasks.map((item) =>
+                item.taskId === taskId ? { ...item, mode: 'view' as Mode } : item
+              ),
+            }
+          : item
+      )
+    );
+  };
+
+  const handleCompleted = (taskId: string, categoryId: string) => {
+    setTaskList((prev) =>
+      prev.map((item) =>
+        item.id === categoryId
+          ? {
+              ...item,
+              tasks: item.tasks.map((item) =>
+                item.taskId === taskId
+                  ? {
+                      ...item,
+                      isCompleted: item.mode !== 'view' ? !item.isCompleted : item.isCompleted,
+                    }
+                  : item
+              ),
+            }
+          : item
+      )
+    );
+  };
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
@@ -98,7 +159,10 @@ const TaskList = () => {
               <div className="bg-white rounded-3xl shadow-2xl ">
                 <p className="text-center font-bold">{item.category}</p>
                 <TaskItems
-                  onSave={handleSaveMode}
+                  onToggleCompledtedd={(taskId) => handleCompleted(taskId, item.id)}
+                  onCancel={(taskId) => handleCancelEdit(taskId, item.id)}
+                  onInputChange={(value, taskId) => handleInputEditChange(value, taskId, item.id)}
+                  onSave={(taskId) => handleSaveMode(taskId, item.id)}
                   onEdit={(taskId) => handleEditMode(taskId, item.id)}
                   onDeleteTask={(taskId) => handleDeleteTask(taskId, item.id)}
                   tasks={item.tasks}

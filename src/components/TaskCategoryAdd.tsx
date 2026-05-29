@@ -18,15 +18,10 @@ const TaskCategoryAdd = ({ onAddCategoryTask }: TaskFormProps) => {
         type="text"
       />
       <Button
-        background="bg-amber-500"
         disabled={!text}
+        background="bg-amber-500"
         text="Add"
-        onClick={() => {
-          {
-            onAddCategoryTask(text);
-            setText('');
-          }
-        }}
+        onClick={() => text !== '' && (onAddCategoryTask(text), setText(''))}
       />
     </div>
   );

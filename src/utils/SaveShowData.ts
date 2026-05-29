@@ -11,12 +11,14 @@ export function showData() {
           taskId: '10',
           text: 'Making Bed',
           isCompleted: false,
+          mode: 'view',
         },
 
         {
           taskId: '20',
           text: 'Wash Dishes',
           isCompleted: true,
+          mode: 'view',
         },
       ],
     },
@@ -29,12 +31,14 @@ export function showData() {
           taskId: '1',
           text: 'Metting',
           isCompleted: true,
+          mode: 'view',
         },
 
         {
           taskId: '2',
           text: 'Drinking Coffee',
           isCompleted: true,
+          mode: 'view',
         },
       ],
     },

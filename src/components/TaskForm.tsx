@@ -21,10 +21,7 @@ const TaskForm = ({ onAddTask }: TaskFormProps) => {
         background="bg-green-600"
         disabled={!text}
         text="Add"
-        onClick={() => {
-          onAddTask(text);
-          setText('');
-        }}
+        onClick={() => text !== '' && (onAddTask(text), setText(''))}
       />
     </div>
   );
