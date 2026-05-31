@@ -24,12 +24,6 @@ const Task = ({
   onToggleCompledted,
 }: Props) => {
   const [draft, setDraft] = useState<string>(text);
-  console.log(text);
-
-  // useEffect(() => {
-  //   // eslint-disable-next-line react-hooks/set-state-in-effect
-  //   setDraft(text);
-  // }, [text, mode]);
 
   const handleCancel = () => {
     onCancel();
