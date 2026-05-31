@@ -20,9 +20,10 @@ const TaskItems = ({
 }: TaskItemsPropsItem) => {
   return (
     <div>
-      {tasks?.map((item) => {
+      {tasks?.map((item, index) => {
         return (
           <Task
+            canEdit={index === 0}
             key={item.taskId}
             text={item.text}
             onToggleCompledted={() => onToggleCompledted(item.taskId)}

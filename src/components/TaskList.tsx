@@ -69,7 +69,12 @@ const TaskList = () => {
               ...item,
               tasks: item.tasks.map((item) =>
                 item.taskId === taskId
-                  ? { ...item, text: value, mode: value === '' ? 'edit' : ('view' as Mode) }
+                  ? {
+                      ...item,
+                      // text: value,
+                      // text: value === '' ? item.text : value,
+                      mode: value === '' ? 'edit' : ('view' as Mode),
+                    }
                   : item
               ),
             }

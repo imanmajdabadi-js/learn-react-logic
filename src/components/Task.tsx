@@ -12,6 +12,7 @@ interface Props {
   onSave: (value: string) => void;
   onEdit: () => void;
   onDeleteTask: () => void;
+  canEdit: boolean;
 }
 const Task = ({
   isCompleted,
@@ -25,13 +26,18 @@ const Task = ({
 }: Props) => {
   const [draft, setDraft] = useState<string>(text);
 
+  const handleCancel = () => {
+    onCancel();
+    setDraft(text);
+  };
+
   return (
     <div className="flex items-center gap-4 p-4  justify-around">
       <TaskTitle onChange={(e) => setDraft(e.target.value)} text={draft} mode={mode} />
       <TaskActions
         isCompleted={isCompleted}
         onToggleCompledtedd={() => onToggleCompledted()}
-        onCancel={() => onCancel()}
+        onCancel={handleCancel}
         onSave={() => onSave(draft)}
         mode={mode}
         onEdit={() => onEdit()}
