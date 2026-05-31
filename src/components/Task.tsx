@@ -12,7 +12,6 @@ interface Props {
   onSave: (value: string) => void;
   onEdit: () => void;
   onDeleteTask: () => void;
-  canEdit: boolean;
 }
 const Task = ({
   isCompleted,
@@ -25,6 +24,12 @@ const Task = ({
   onToggleCompledted,
 }: Props) => {
   const [draft, setDraft] = useState<string>(text);
+  console.log(text);
+
+  // useEffect(() => {
+  //   // eslint-disable-next-line react-hooks/set-state-in-effect
+  //   setDraft(text);
+  // }, [text, mode]);
 
   const handleCancel = () => {
     onCancel();
@@ -33,7 +38,11 @@ const Task = ({
 
   return (
     <div className="flex items-center gap-4 p-4  justify-around">
-      <TaskTitle onChange={(e) => setDraft(e.target.value)} text={draft} mode={mode} />
+      <TaskTitle
+        onChange={(e) => setDraft(e.target.value)}
+        text={mode === 'edit' ? draft : text}
+        mode={mode}
+      />
       <TaskActions
         isCompleted={isCompleted}
         onToggleCompledtedd={() => onToggleCompledted()}

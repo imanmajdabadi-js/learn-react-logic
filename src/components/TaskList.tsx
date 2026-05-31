@@ -9,6 +9,9 @@ const TaskList = () => {
   const [taskList, setTaskList] = useState<TaskListProps[]>(showData);
 
   useEffect(() => {
+    const result = taskList.flatMap((item) => item.tasks);
+    console.log(result);
+
     saveData(taskList);
   }, [taskList]);
 
@@ -71,7 +74,7 @@ const TaskList = () => {
                 item.taskId === taskId
                   ? {
                       ...item,
-                      // text: value,
+                      text: value,
                       // text: value === '' ? item.text : value,
                       mode: value === '' ? 'edit' : ('view' as Mode),
                     }
