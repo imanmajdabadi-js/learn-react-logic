@@ -9,7 +9,20 @@ const TaskList = () => {
   const [taskList, setTaskList] = useState<TaskListProps[]>(showData);
 
   useEffect(() => {
-    saveData(taskList);
+    const result = taskList.map((category) => {
+      return {
+        ...category,
+        tasks: category.tasks.map((task) => {
+          const newObj: Omit<TaskProps, 'mode'> = {
+            taskId: task.taskId,
+            isCompleted: task.isCompleted,
+            text: task.text,
+          };
+          return newObj;
+        }),
+      };
+    });
+    saveData(result);
   }, [taskList]);
 
   const handleAddCategoryTask = (categoryText: string) => {
