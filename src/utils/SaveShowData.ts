@@ -1,8 +1,8 @@
-import type { TaskListProps } from '../types';
+import type { CategoryType, CategoryWithoutMode } from '../types';
 
 export function showData() {
   const saveData = localStorage.getItem('tasks');
-  const taskListArr: TaskListProps[] = [
+  const taskListArr: CategoryType[] = [
     {
       category: 'Home',
       id: '1',
@@ -57,6 +57,6 @@ export function showData() {
   //   : (localStorage.setItem('tasks', JSON.stringify(taskListArr)), taskListArr);
 }
 
-export function saveData(updatedList: TaskListProps[]) {
+export function saveData(updatedList: CategoryWithoutMode[]) {
   return localStorage.setItem('tasks', JSON.stringify(updatedList));
 }

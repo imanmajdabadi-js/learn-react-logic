@@ -1,4 +1,4 @@
-export interface TaskProps {
+export interface TaskType {
   taskId: string;
   text: string;
   isCompleted: boolean;
@@ -8,11 +8,23 @@ export interface TaskProps {
 export type Mode = 'edit' | 'view';
 
 export interface Tasks {
-  tasks: TaskProps[];
+  tasks: TaskType[];
 }
 
-export interface TaskListProps {
+export interface CategoryType {
   category: string;
   id: string;
-  tasks: TaskProps[];
+  tasks: TaskType[];
+}
+
+export interface TaskWithoutMode {
+  taskId: string;
+  isCompleted: boolean;
+  text: string;
+}
+
+export interface CategoryWithoutMode {
+  category: string;
+  id: string;
+  tasks: Omit<TaskType, 'mode'>[];
 }

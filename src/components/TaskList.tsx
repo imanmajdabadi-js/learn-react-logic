@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
-import type { Mode, TaskListProps, TaskProps } from '../types';
+import type { CategoryType, Mode, TaskType } from '../types';
 import { saveData, showData } from '../utils/SaveShowData';
 import TaskCategoryAdd from './TaskCategoryAdd';
 import TaskForm from './TaskForm';
 import TaskItems from './TaskItems';
 
 const TaskList = () => {
-  const [taskList, setTaskList] = useState<TaskListProps[]>(showData);
-
+  const [taskList, setTaskList] = useState<CategoryType[]>(showData);
   useEffect(() => {
     const result = taskList.map((category) => {
       return {
         ...category,
         tasks: category.tasks.map((task) => {
-          const newObj: Omit<TaskProps, 'mode'> = {
+          const newObj: Omit<TaskType, 'mode'> = {
             taskId: task.taskId,
             isCompleted: task.isCompleted,
             text: task.text,
@@ -46,7 +45,7 @@ const TaskList = () => {
   };
 
   const handleAddTask = (categoryId: string, textTask: string) => {
-    const newTask: TaskProps = {
+    const newTask: TaskType = {
       taskId: crypto.randomUUID(),
       text: textTask,
       isCompleted: true,
@@ -66,7 +65,9 @@ const TaskList = () => {
           ? {
               ...item,
               tasks: item.tasks.map((item) =>
-                item.taskId === taskId ? { ...item, mode: 'edit' as Mode } : item
+                item.taskId === taskId
+                  ? { ...item, mode: 'edit' as Mode }
+                  : { ...item, mode: 'view' as Mode }
               ),
             }
           : item
@@ -133,7 +134,7 @@ const TaskList = () => {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-        {taskList?.map((item: TaskListProps) => {
+        {taskList?.map((item: CategoryType) => {
           return (
             <div className="w-full" key={item.id}>
               <TaskForm onAddTask={(textTask) => handleAddTask(item.id, textTask)} />

@@ -1,8 +1,8 @@
-import type { TaskProps } from '../types';
+import type { TaskType } from '../types';
 import Task from './Task';
 
 interface TaskItemsPropsItem {
-  tasks: TaskProps[];
+  tasks: TaskType[];
   onDeleteTask: (taskId: string) => void;
   onEdit: (taskId: string) => void;
   onSave: (taskId: string, value: string) => void;
