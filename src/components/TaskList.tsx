@@ -7,6 +7,8 @@ import TaskItems from './TaskItems';
 
 const TaskList = () => {
   const [taskList, setTaskList] = useState<CategoryType[]>(showData);
+  const [editingId, setIsEditingId] = useState<string | null>(null);
+
   useEffect(() => {
     const result = taskList.map((category) => {
       return {
@@ -70,9 +72,10 @@ const TaskList = () => {
                   : { ...item, mode: 'view' as Mode }
               ),
             }
-          : item
+          : { ...item, tasks: item.tasks.map((item) => ({ ...item, mode: 'view' })) }
       )
     );
+    setIsEditingId(taskId);
   };
 
   const handleSaveMode = (taskId: string, categoryId: string, value: string) => {
@@ -86,7 +89,6 @@ const TaskList = () => {
                   ? {
                       ...item,
                       text: value,
-                      // text: value === '' ? item.text : value,
                       mode: value === '' ? 'edit' : ('view' as Mode),
                     }
                   : item
@@ -95,6 +97,7 @@ const TaskList = () => {
           : item
       )
     );
+    setIsEditingId(null);
   };
 
   const handleCancelEdit = (taskId: string, categoryId: string) => {
@@ -141,6 +144,7 @@ const TaskList = () => {
               <div className="bg-white rounded-3xl shadow-2xl ">
                 <p className="text-center font-bold">{item.category}</p>
                 <TaskItems
+                  editingId={editingId}
                   onToggleCompledted={(taskId) => handleCompleted(taskId, item.id)}
                   onCancel={(taskId) => handleCancelEdit(taskId, item.id)}
                   onSave={(taskId, value) => handleSaveMode(taskId, item.id, value)}

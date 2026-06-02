@@ -8,10 +8,12 @@ interface TaskItemsPropsItem {
   onSave: (taskId: string, value: string) => void;
   onCancel: (taskId: string) => void;
   onToggleCompledted: (taskId: string) => void;
+  editingId: string | null;
 }
 
 const TaskItems = ({
   tasks,
+  editingId,
   onDeleteTask,
   onToggleCompledted,
   onEdit,
@@ -27,7 +29,7 @@ const TaskItems = ({
             text={item.text}
             onToggleCompledted={() => onToggleCompledted(item.taskId)}
             onSave={(value) => onSave(item.taskId, value)}
-            onEdit={() => onEdit(item.taskId)}
+            onEdit={() => (!editingId ? onEdit(item.taskId) : null)}
             isCompleted={item.isCompleted}
             mode={item.mode}
             onCancel={() => onCancel(item.taskId)}
