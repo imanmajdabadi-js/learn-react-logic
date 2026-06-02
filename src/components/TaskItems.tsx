@@ -8,7 +8,7 @@ interface TaskItemsPropsItem {
   onSave: (taskId: string, value: string) => void;
   onCancel: (taskId: string) => void;
   onToggleCompledted: (taskId: string) => void;
-  editingId: string | null;
+  editingId?: string | null;
 }
 
 const TaskItems = ({

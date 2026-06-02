@@ -62,19 +62,18 @@ const TaskList = () => {
 
   const handleEditMode = (taskId: string, categoryId: string) => {
     setTaskList((prev) =>
-      prev.map((item) =>
-        item.id === categoryId
+      prev.map((category) =>
+        category.id === categoryId
           ? {
-              ...item,
-              tasks: item.tasks.map((item) =>
-                item.taskId === taskId
-                  ? { ...item, mode: 'edit' as Mode }
-                  : { ...item, mode: 'view' as Mode }
+              ...category,
+              tasks: category.tasks.map((task) =>
+                task.taskId === taskId ? { ...task, mode: 'edit' } : { ...task, mode: 'view' }
               ),
             }
-          : { ...item, tasks: item.tasks.map((item) => ({ ...item, mode: 'view' })) }
+          : category
       )
     );
+
     setIsEditingId(taskId);
   };
 
@@ -113,6 +112,7 @@ const TaskList = () => {
           : item
       )
     );
+    setIsEditingId(null);
   };
 
   const handleCompleted = (taskId: string, categoryId: string) => {
