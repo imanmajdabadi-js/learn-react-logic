@@ -77,7 +77,12 @@ const TaskList = () => {
     setIsEditingId(taskId);
   };
 
-  const handleSaveMode = (taskId: string, categoryId: string, value: string) => {
+  const handleSaveMode = (
+    taskId: string,
+    categoryId: string,
+    value: string,
+    draftIsCompleted: boolean
+  ) => {
     setTaskList((prev) =>
       prev.map((item) =>
         item.id === categoryId
@@ -89,6 +94,7 @@ const TaskList = () => {
                       ...item,
                       text: value,
                       mode: value === '' ? 'edit' : ('view' as Mode),
+                      isCompleted: draftIsCompleted,
                     }
                   : item
               ),
@@ -115,25 +121,6 @@ const TaskList = () => {
     setIsEditingId(null);
   };
 
-  const handleCompleted = (taskId: string, categoryId: string) => {
-    setTaskList((prev) =>
-      prev.map((item) =>
-        item.id === categoryId
-          ? {
-              ...item,
-              tasks: item.tasks.map((item) =>
-                item.taskId === taskId
-                  ? {
-                      ...item,
-                      isCompleted: item.mode === 'edit' ? !item.isCompleted : item.isCompleted,
-                    }
-                  : item
-              ),
-            }
-          : item
-      )
-    );
-  };
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
@@ -145,9 +132,10 @@ const TaskList = () => {
                 <p className="text-center font-bold">{item.category}</p>
                 <TaskItems
                   editingId={editingId}
-                  onToggleCompledted={(taskId) => handleCompleted(taskId, item.id)}
                   onCancel={(taskId) => handleCancelEdit(taskId, item.id)}
-                  onSave={(taskId, value) => handleSaveMode(taskId, item.id, value)}
+                  onSave={(taskId, value, draftIsCompleted) =>
+                    handleSaveMode(taskId, item.id, value, draftIsCompleted)
+                  }
                   onEdit={(taskId) => handleEditMode(taskId, item.id)}
                   onDeleteTask={(taskId) => handleDeleteTask(taskId, item.id)}
                   tasks={item.tasks}

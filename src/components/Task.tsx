@@ -7,9 +7,9 @@ interface Props {
   text: string;
   mode: Mode;
   isCompleted: boolean;
-  onToggleCompledted: () => void;
+  onToggleCompledted?: () => void;
   onCancel: () => void;
-  onSave: (value: string) => void;
+  onSave: (value: string, draftIsCompleted: boolean) => void;
   onEdit: () => void;
   onDeleteTask: () => void;
 }
@@ -24,10 +24,20 @@ const Task = ({
   onToggleCompledted,
 }: Props) => {
   const [draft, setDraft] = useState<string>(text);
+  const [draftIsCompleted, setDraftIsCompleted] = useState<boolean>(isCompleted);
 
   const handleCancel = () => {
     onCancel();
     setDraft(text);
+    setDraftIsCompleted(isCompleted);
+  };
+
+  const handleToggle = () => {
+    if (mode === 'edit') {
+      setDraftIsCompleted((prev) => !prev);
+    } else {
+      onToggleCompledted!();
+    }
   };
 
   return (
@@ -38,10 +48,10 @@ const Task = ({
         mode={mode}
       />
       <TaskActions
-        isCompleted={isCompleted}
-        onToggleCompledtedd={() => onToggleCompledted()}
+        isCompleted={mode === 'edit' ? draftIsCompleted : isCompleted}
+        onToggleCompledtedd={handleToggle}
         onCancel={handleCancel}
-        onSave={() => onSave(draft)}
+        onSave={() => onSave(draft, draftIsCompleted)}
         mode={mode}
         onEdit={() => onEdit()}
         onDelete={() => onDeleteTask()}

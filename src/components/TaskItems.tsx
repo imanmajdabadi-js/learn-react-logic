@@ -5,9 +5,8 @@ interface TaskItemsPropsItem {
   tasks: TaskType[];
   onDeleteTask: (taskId: string) => void;
   onEdit: (taskId: string) => void;
-  onSave: (taskId: string, value: string) => void;
+  onSave: (taskId: string, value: string, draftIsCompleted: boolean) => void;
   onCancel: (taskId: string) => void;
-  onToggleCompledted: (taskId: string) => void;
   editingId?: string | null;
 }
 
@@ -15,7 +14,6 @@ const TaskItems = ({
   tasks,
   editingId,
   onDeleteTask,
-  onToggleCompledted,
   onEdit,
   onSave,
   onCancel,
@@ -27,8 +25,7 @@ const TaskItems = ({
           <Task
             key={item.taskId}
             text={item.text}
-            onToggleCompledted={() => onToggleCompledted(item.taskId)}
-            onSave={(value) => onSave(item.taskId, value)}
+            onSave={(value, draftIsCompleted) => onSave(item.taskId, value, draftIsCompleted)}
             onEdit={() => (!editingId ? onEdit(item.taskId) : null)}
             isCompleted={item.isCompleted}
             mode={item.mode}
