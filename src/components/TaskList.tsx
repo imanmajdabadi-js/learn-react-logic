@@ -7,7 +7,7 @@ import TaskItems from './TaskItems';
 
 const TaskList = () => {
   const [taskList, setTaskList] = useState<TaskListProps[]>(showData);
-
+  const [editingId, setEditingId] = useState<string | null>(null);
   useEffect(() => {
     const result = taskList.map((category) => {
       return {
@@ -22,7 +22,8 @@ const TaskList = () => {
         }),
       };
     });
-    saveData(result);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    saveData(result as any);
   }, [taskList]);
 
   const handleAddCategoryTask = (categoryText: string) => {
@@ -60,21 +61,15 @@ const TaskList = () => {
   };
 
   const handleEditMode = (taskId: string, categoryId: string) => {
-    setTaskList((prev) =>
-      prev.map((item) =>
-        item.id === categoryId
-          ? {
-              ...item,
-              tasks: item.tasks.map((item) =>
-                item.taskId === taskId ? { ...item, mode: 'edit' as Mode } : item
-              ),
-            }
-          : item
-      )
-    );
+    setEditingId(taskId);
   };
 
-  const handleSaveMode = (taskId: string, categoryId: string, value: string) => {
+  const handleSaveMode = (
+    taskId: string,
+    categoryId: string,
+    value: string,
+    draftIsCompleted: boolean
+  ) => {
     setTaskList((prev) =>
       prev.map((item) =>
         item.id === categoryId
@@ -85,8 +80,7 @@ const TaskList = () => {
                   ? {
                       ...item,
                       text: value,
-                      // text: value === '' ? item.text : value,
-                      mode: value === '' ? 'edit' : ('view' as Mode),
+                      isCompleted: draftIsCompleted,
                     }
                   : item
               ),
@@ -94,6 +88,7 @@ const TaskList = () => {
           : item
       )
     );
+    setEditingId(null);
   };
 
   const handleCancelEdit = (taskId: string, categoryId: string) => {
@@ -109,6 +104,7 @@ const TaskList = () => {
           : item
       )
     );
+    setEditingId(null);
   };
 
   const handleCompleted = (taskId: string, categoryId: string) => {
@@ -121,7 +117,7 @@ const TaskList = () => {
                 item.taskId === taskId
                   ? {
                       ...item,
-                      isCompleted: item.mode === 'edit' ? !item.isCompleted : item.isCompleted,
+                      isCompleted: !item.isCompleted,
                     }
                   : item
               ),
@@ -140,9 +136,12 @@ const TaskList = () => {
               <div className="bg-white rounded-3xl shadow-2xl ">
                 <p className="text-center font-bold">{item.category}</p>
                 <TaskItems
+                  editingId={editingId}
                   onToggleCompledted={(taskId) => handleCompleted(taskId, item.id)}
                   onCancel={(taskId) => handleCancelEdit(taskId, item.id)}
-                  onSave={(taskId, value) => handleSaveMode(taskId, item.id, value)}
+                  onSave={(taskId, value, draftIsCompleted) =>
+                    handleSaveMode(taskId, item.id, value, draftIsCompleted)
+                  }
                   onEdit={(taskId) => handleEditMode(taskId, item.id)}
                   onDeleteTask={(taskId) => handleDeleteTask(taskId, item.id)}
                   tasks={item.tasks}

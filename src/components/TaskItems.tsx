@@ -5,9 +5,10 @@ interface TaskItemsPropsItem {
   tasks: TaskProps[];
   onDeleteTask: (taskId: string) => void;
   onEdit: (taskId: string) => void;
-  onSave: (taskId: string, value: string) => void;
+  onSave: (taskId: string, value: string, draftIsCompleted: boolean) => void;
   onCancel: (taskId: string) => void;
   onToggleCompledted: (taskId: string) => void;
+  editingId: string | null;
 }
 
 const TaskItems = ({
@@ -15,21 +16,23 @@ const TaskItems = ({
   onDeleteTask,
   onToggleCompledted,
   onEdit,
+  editingId,
   onSave,
   onCancel,
 }: TaskItemsPropsItem) => {
   return (
     <div>
       {tasks?.map((item) => {
+        const isEditing = item.taskId === editingId;
         return (
           <Task
             key={item.taskId}
             text={item.text}
             onToggleCompledted={() => onToggleCompledted(item.taskId)}
-            onSave={(value) => onSave(item.taskId, value)}
+            onSave={(value, draftIsCompleted) => onSave(item.taskId, value, draftIsCompleted)}
             onEdit={() => onEdit(item.taskId)}
             isCompleted={item.isCompleted}
-            mode={item.mode}
+            isEditing={isEditing}
             onCancel={() => onCancel(item.taskId)}
             onDeleteTask={() => onDeleteTask(item.taskId)}
           />
