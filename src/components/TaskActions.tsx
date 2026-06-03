@@ -12,14 +12,14 @@ interface TaskActionsProps {
   mode: Mode;
   onSave: () => void;
   onCancel: () => void;
-  onToggleCompledtedd: () => void;
+  onToggleCompledted: () => void;
 }
 
 const TaskActions = ({
   isCompleted,
   onDelete,
   onEdit,
-  onToggleCompledtedd,
+  onToggleCompledted,
   mode,
   onSave,
   onCancel,
@@ -33,14 +33,14 @@ const TaskActions = ({
       )}
       {isCompleted ? (
         <ImCheckboxChecked
-          onClick={onToggleCompledtedd}
+          onClick={onToggleCompledted}
           className="cursor-pointer"
           size={18}
           color="green"
         />
       ) : (
         <ImCheckboxUnchecked
-          onClick={onToggleCompledtedd}
+          onClick={onToggleCompledted}
           className="cursor-pointer"
           size={18}
           color="green"
