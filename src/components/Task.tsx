@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import type { Mode } from '../types';
 import TaskActions from './TaskActions';
 import TaskTitle from './TaskTitle';
 
 interface Props {
   text: string;
-  isEditing: boolean;
+  mode: Mode;
   isCompleted: boolean;
   onToggleCompledted: () => void;
   onCancel: () => void;
@@ -12,7 +13,7 @@ interface Props {
   onEdit: () => void;
   onDeleteTask: () => void;
 }
-const Task = ({ isCompleted, text, isEditing, onCancel, onDeleteTask, onEdit, onSave }: Props) => {
+const Task = ({ isCompleted, text, mode, onCancel, onDeleteTask, onEdit, onSave }: Props) => {
   const [draft, setDraft] = useState<string>(text);
   const [draftIsCompleted, setDraftIsCompleted] = useState<boolean>(isCompleted);
 
@@ -30,15 +31,15 @@ const Task = ({ isCompleted, text, isEditing, onCancel, onDeleteTask, onEdit, on
     <div className="flex items-center gap-4 p-4  justify-around">
       <TaskTitle
         onChange={(e) => setDraft(e.target.value)}
-        text={isEditing ? draft : text}
-        isEditing={isEditing}
+        text={mode === 'edit' ? draft : text}
+        mode={mode}
       />
       <TaskActions
-        isCompleted={isEditing ? draftIsCompleted : isCompleted}
+        isCompleted={mode === 'edit' ? draftIsCompleted : isCompleted}
         onToggleCompledtedd={handleCompleted}
         onCancel={handleCancel}
         onSave={() => onSave(draft, draftIsCompleted)}
-        isEditing={isEditing}
+        mode={mode}
         onEdit={() => onEdit()}
         onDelete={() => onDeleteTask()}
       />

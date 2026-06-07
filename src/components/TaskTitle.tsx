@@ -1,15 +1,16 @@
 import type { ChangeEvent } from 'react';
+import type { Mode } from '../types';
 import Input from './Input';
 
 interface Props {
-  isEditing: boolean;
+  mode: Mode;
   text: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
-const TaskTitle = ({ text, onChange, isEditing }: Props) => {
+const TaskTitle = ({ text, onChange, mode }: Props) => {
   return (
     <div>
-      {isEditing ? (
+      {mode === 'edit' ? (
         <Input className="w-32" value={text} onChange={onChange} />
       ) : (
         <p className="text-sm">{text}</p>

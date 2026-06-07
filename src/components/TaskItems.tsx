@@ -32,7 +32,7 @@ const TaskItems = ({
             onSave={(value, draftIsCompleted) => onSave(item.taskId, value, draftIsCompleted)}
             onEdit={() => onEdit(item.taskId)}
             isCompleted={item.isCompleted}
-            isEditing={isEditing}
+            mode={isEditing ? 'edit' : 'view'}
             onCancel={() => onCancel(item.taskId)}
             onDeleteTask={() => onDeleteTask(item.taskId)}
           />
