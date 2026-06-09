@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import type { CategoryTask, TaskListProps, TaskProps } from '../types';
+import type { CategoryTask, TaskListProps as CategoryType, TaskProps } from '../types';
 import { saveData, showData } from '../utils/SaveShowData';
 import TaskCategoryAdd from './TaskCategoryAdd';
 import TaskForm from './TaskForm';
 import TaskItems from './TaskItems';
 
 const TaskList = () => {
-  const [taskList, setTaskList] = useState<TaskListProps[]>(showData);
-  const [editingTasks, setEditingTasks] = useState<CategoryTask[]>([]);
+  const [categories, setCategories] = useState<CategoryType[]>(showData);
+  const [categoryTasks, setCategoryTasks] = useState<CategoryTask[]>([]);
 
   useEffect(() => {
-    const result = taskList.map((category) => {
+    const result = categories.map((category) => {
       return {
         ...category,
         tasks: category.tasks.map((task) => {
@@ -24,7 +24,7 @@ const TaskList = () => {
       };
     });
     saveData(result);
-  }, [taskList]);
+  }, [categories]);
 
   const handleAddCategoryTask = (categoryText: string) => {
     const newCategoryAdd = {
@@ -34,11 +34,11 @@ const TaskList = () => {
       editingId: null,
     };
 
-    setTaskList((prev) => [...prev, newCategoryAdd]);
+    setCategories((prev) => [...prev, newCategoryAdd]);
   };
 
   const handleDeleteTask = (taskId: string, categoryId: string) => {
-    setTaskList((prev) =>
+    setCategories((prev) =>
       prev.map((item) =>
         item.id === categoryId
           ? { ...item, tasks: item.tasks.filter((item) => item.taskId !== taskId) }
@@ -53,7 +53,7 @@ const TaskList = () => {
       text: textTask,
       isCompleted: true,
     };
-    setTaskList((prev) =>
+    setCategories((prev) =>
       prev.map((item) =>
         item.id === categoryId ? { ...item, tasks: [...item.tasks, newTask] } : item
       )
@@ -61,7 +61,7 @@ const TaskList = () => {
   };
 
   const handleEditMode = (taskId: string, categoryId: string) => {
-    setEditingTasks((prev) => [...prev, { taskId, categoryId }]);
+    setCategoryTasks((prev) => [...prev, { taskId, categoryId }]);
   };
 
   const handleSaveMode = (
@@ -73,7 +73,7 @@ const TaskList = () => {
     if (value === '') {
       return;
     }
-    setTaskList((prev) =>
+    setCategories((prev) =>
       prev.map((item) =>
         item.id === categoryId
           ? {
@@ -93,19 +93,19 @@ const TaskList = () => {
       )
     );
 
-    setEditingTasks((prev) =>
+    setCategoryTasks((prev) =>
       prev.filter((item) => item.taskId !== taskId || item.categoryId !== categoryId)
     );
   };
 
   const handleCancelEdit = (taskId: string, categoryId: string) => {
-    setEditingTasks((prev) =>
+    setCategoryTasks((prev) =>
       prev.filter((item) => item.taskId !== taskId || item.categoryId !== categoryId)
     );
   };
 
   const handleCompleted = (taskId: string, categoryId: string) => {
-    setTaskList((prev) =>
+    setCategories((prev) =>
       prev.map((item) =>
         item.id === categoryId
           ? {
@@ -125,7 +125,7 @@ const TaskList = () => {
   };
 
   function findTaskEditingId(categoryId: string): string | null {
-    const find = editingTasks.find((pair) => {
+    const find = categoryTasks.find((pair) => {
       if (pair.categoryId === categoryId) {
         return true;
       } else {
@@ -143,22 +143,35 @@ const TaskList = () => {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-        {taskList?.map((item: TaskListProps) => {
+        {categories?.map((category: CategoryType) => {
+          // const editingId = findTaskEditingId(item.id);
+          let editingTaskId: string | null = null;
+          const selectedCategoryTask = categoryTasks.find((pair) => {
+            if (pair.categoryId === category.id) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          if (selectedCategoryTask) {
+            editingTaskId = selectedCategoryTask.taskId;
+          }
+
           return (
-            <div className="w-full" key={item.id}>
-              <TaskForm onAddTask={(textTask) => handleAddTask(item.id, textTask)} />
+            <div className="w-full" key={category.id}>
+              <TaskForm onAddTask={(textTask) => handleAddTask(category.id, textTask)} />
               <div className="bg-white rounded-3xl shadow-2xl ">
-                <p className="text-center font-bold">{item.category}</p>
+                <p className="text-center font-bold">{category.category}</p>
                 <TaskItems
-                  editingId={findTaskEditingId(item.id)}
-                  onToggleCompledted={(taskId) => handleCompleted(taskId, item.id)}
-                  onCancel={(taskId) => handleCancelEdit(taskId, item.id)}
+                  editingId={editingTaskId}
+                  onToggleCompledted={(taskId) => handleCompleted(taskId, category.id)}
+                  onCancel={(taskId) => handleCancelEdit(taskId, category.id)}
                   onSave={(taskId, value, draftIsCompleted) =>
-                    handleSaveMode(taskId, item.id, value, draftIsCompleted)
+                    handleSaveMode(taskId, category.id, value, draftIsCompleted)
                   }
-                  onEdit={(taskId) => handleEditMode(taskId, item.id)}
-                  onDeleteTask={(taskId) => handleDeleteTask(taskId, item.id)}
-                  tasks={item.tasks}
+                  onEdit={(taskId) => handleEditMode(taskId, category.id)}
+                  onDeleteTask={(taskId) => handleDeleteTask(taskId, category.id)}
+                  tasks={category.tasks}
                 />
               </div>
             </div>
