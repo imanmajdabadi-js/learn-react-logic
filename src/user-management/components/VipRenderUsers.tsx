@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { UserType } from '../types';
-import DropDown from './DropDown';
-import { dropDownItems } from './DropDownItems';
+import Search from './Search';
 import User from './User';
 
 interface Props {
@@ -13,45 +12,71 @@ interface Props {
   onDelete: (userId: string) => void;
 }
 const VipRenderUsers = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }: Props) => {
-  const [selectedDropValue, setSelectedDropValue] = useState<string>('');
+  const [searchEmail, setSearchEmail] = useState<string>('');
+
+  const [selectedUserType, setSelectedUserType] = useState<string>('');
+
+  const [selectedRole, setSelectedRole] = useState<string>('');
+
   const vipUsers = users.filter((user) => user.isVip);
+
   const normalUsers = users.filter((user) => !user.isVip);
+
   const newUsers = [...vipUsers, ...normalUsers];
 
-  const newArr = [...users].sort((a, b) => {
-    if (a.isVip === b.isVip) {
-      return 0;
-    } else if (a.isVip) {
-      return -1;
-    } else {
-      return 1;
-    }
-  });
-  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDropValue(e.target.value);
+  // const newArr = [...users].sort((a, b) => {
+  //   if (a.isVip === b.isVip) {
+  //     return 0;
+  //   } else if (a.isVip) {
+  //     return -1;
+  //   } else {
+  //     return 1;
+  //   }
+  // });
+  const handleSelectType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedUserType(e.target.value);
   };
 
-  function userRender(condition: string): UserType[] {
-    if (condition === '' || condition === 'All') {
-      return newUsers;
-    } else if (condition === 'Vip') {
-      return vipUsers;
-    } else if (condition === 'Normal') {
-      return normalUsers;
-    } else {
-      return users;
-    }
-  }
+  const handleSelectRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRole(e.target.value);
+  };
 
-  const newRenderUser = userRender(selectedDropValue);
+  function search(type: string, searchEmail: string, role: string): UserType[] {
+    let searchResult = newUsers.filter((user) =>
+      user.email.toLowerCase().includes(searchEmail.toLowerCase())
+    );
+    if (type === 'Vip') {
+      searchResult = searchResult.filter((user) => user.isVip);
+    } else if (type === 'Normal') {
+      searchResult = searchResult.filter((user) => !user.isVip);
+    }
+
+    if (role === 'Admin') {
+      searchResult = searchResult.filter((user) => user.isAdmin);
+    } else if (role === 'User') {
+      searchResult = searchResult.filter((user) => !user.isAdmin);
+    }
+
+    return searchResult;
+  }
+  const usersToDisplay = search(selectedUserType, searchEmail, selectedRole);
+
+  const handleSearch = (value: string) => {
+    setSearchEmail(value);
+  };
 
   return (
     <>
-      <DropDown
-        selectedDropDownValue={selectedDropValue}
-        onSelect={handleSelect}
-        dropDown={dropDownItems}
-      />
+      <div className="flex items-center gap-4">
+        <Search
+          onSelectType={handleSelectType}
+          selectType={selectedUserType}
+          onSelectRole={handleSelectRole}
+          selectRole={selectedRole}
+          onClick={handleSearch}
+          searchEmail={searchEmail}
+        />
+      </div>
       <table className="border w-3xl table-fixed">
         <thead>
           <tr className="border">
@@ -65,7 +90,7 @@ const VipRenderUsers = ({ users, onCancel, onSave, onEdit, selectedUserId, onDel
           </tr>
         </thead>
         <tbody>
-          {newRenderUser.map((user, index) => {
+          {usersToDisplay.map((user, index) => {
             return (
               <User
                 index={index + 1}

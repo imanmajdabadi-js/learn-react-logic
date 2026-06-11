@@ -6,17 +6,18 @@ interface Props {
 interface DropDownType {
   dropDown: Props[];
   onSelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  selectedDropDownValue: string;
+  titleLabel: string;
+  value: string;
 }
-const DropDown = ({ dropDown, onSelect, selectedDropDownValue }: DropDownType) => {
+const DropDown = ({ dropDown, onSelect, titleLabel, value }: DropDownType) => {
   return (
     <>
       <form className="flex items-center gap-2" action="">
         <label className="text-sm" htmlFor="">
-          Select :
+          {titleLabel} :
         </label>
         <select
-          value={selectedDropDownValue}
+          value={value}
           onChange={onSelect}
           className="border text-sm p-1 rounded-md"
           name="users"
