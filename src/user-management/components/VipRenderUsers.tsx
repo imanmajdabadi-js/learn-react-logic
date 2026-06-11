@@ -12,7 +12,7 @@ interface Props {
   onDelete: (userId: string) => void;
 }
 const VipRenderUsers = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }: Props) => {
-  const [searchEmail, setSearchEmail] = useState<string>('');
+  const [searchEmailInput, setSearchEmailInput] = useState<string>('');
 
   const [selectedUserType, setSelectedUserType] = useState<string>('');
 
@@ -33,12 +33,11 @@ const VipRenderUsers = ({ users, onCancel, onSave, onEdit, selectedUserId, onDel
   //     return 1;
   //   }
   // });
-  const handleSelectType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedUserType(e.target.value);
-  };
 
-  const handleSelectRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedRole(e.target.value);
+  const handleButtonSearch = (searchEmail: string, typeSelect: string, roleSelect: string) => {
+    setSearchEmailInput(searchEmail);
+    setSelectedRole(roleSelect);
+    setSelectedUserType(typeSelect);
   };
 
   function search(type: string, searchEmail: string, role: string): UserType[] {
@@ -59,22 +58,16 @@ const VipRenderUsers = ({ users, onCancel, onSave, onEdit, selectedUserId, onDel
 
     return searchResult;
   }
-  const usersToDisplay = search(selectedUserType, searchEmail, selectedRole);
-
-  const handleSearch = (value: string) => {
-    setSearchEmail(value);
-  };
+  const usersToDisplay = search(selectedUserType, searchEmailInput, selectedRole);
 
   return (
     <>
       <div className="flex items-center gap-4">
         <Search
-          onSelectType={handleSelectType}
-          selectType={selectedUserType}
-          onSelectRole={handleSelectRole}
-          selectRole={selectedRole}
-          onClick={handleSearch}
-          searchEmail={searchEmail}
+          selectedRole={selectedRole}
+          selectedUserType={selectedUserType}
+          onClick={handleButtonSearch}
+          searchEmail={searchEmailInput}
         />
       </div>
       <table className="border w-3xl table-fixed">

@@ -3,55 +3,62 @@ import DropDown from './DropDown';
 import { SelectRoleUsers, SelectTypeUsers } from './DropDownItems';
 
 interface Props {
-  onClick: (searchEmail: string, roleUser: string, type: string) => void;
-  onSelectRole: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onSelectType: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  searchEmail: string;
+  onClick: (inputValue: string, typeSelect: string, roleSelect: string) => void;
+  selectedUserType: string;
   selectedRole: string;
-  selectType: string;
 }
 
-const Search = ({ onClick, onSelectRole, selectedRole, selectType, onSelectType }: Props) => {
-  const [searchText, setSearchText] = useState<string>('');
+const Search = ({ onClick }: Props) => {
+  const [text, setText] = useState<string>('');
 
-  //   const [selectedRole, setSelectedRole] = useState<string>('');
+  const [selectedUserType, setSelectedUserType] = useState<string>('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
+  const [selectedRole, setSelectedRole] = useState<string>('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
   };
 
-  //   const handleSelectRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //     setSelectedRole(e.target.value);
-  //   };
-
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    onClick(searchText, selectedRole, selectType);
+
+    onClick(text, selectedUserType, selectedRole);
   };
+
+  const handleSelectRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRole(e.target.value);
+  };
+
+  const handleSelecType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedUserType(e.target.value);
+  };
+
   return (
     <div className="flex items-center gap-2">
       <DropDown
-        value={selectedRole}
+        value={selectedUserType}
+        onSelect={handleSelecType}
         titleLabel="SelectTypeUser"
-        onSelect={onSelectRole}
-        dropDown={SelectRoleUsers}
+        dropDown={SelectTypeUsers}
       />
 
       <DropDown
-        value={selectType}
-        titleLabel="SelectTypeUser"
-        onSelect={onSelectType}
-        dropDown={SelectTypeUsers}
+        value={selectedRole}
+        onSelect={handleSelectRole}
+        titleLabel="SelectRoleUser"
+        dropDown={SelectRoleUsers}
       />
       <div className="flex items-center gap-2">
         <label htmlFor="">Email:</label>
         <input
           className="border rounded-md text-center"
-          value={searchText}
-          onChange={handleChange}
+          value={text}
+          onChange={handleInputChange}
           type="text"
         />
         <button
-          onClick={handleClick}
+          onClick={handleButtonClick}
           className="px-2 py-1 rounded-md bg-violet-700 text-white text-sm"
         >
           Search
