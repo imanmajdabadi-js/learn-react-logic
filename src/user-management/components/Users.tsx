@@ -2,7 +2,7 @@ import { useConfirm } from '@omit/react-confirm-dialog';
 import { useState } from 'react';
 import type { UserType } from '../types';
 import { InitialState } from './InitialState';
-import VipRenderUsers from './VipRenderUsers';
+import UserTable from './UserTable';
 
 const Users = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -51,7 +51,7 @@ const Users = () => {
   };
 
   return (
-    <VipRenderUsers
+    <UserTable
       users={users}
       selectedUserId={selectedUserId}
       onSave={handleSave}

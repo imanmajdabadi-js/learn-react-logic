@@ -11,7 +11,7 @@ interface Props {
   selectedUserId: string | null;
   onDelete: (userId: string) => void;
 }
-const VipRenderUsers = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }: Props) => {
+const UserTable = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }: Props) => {
   const [searchEmailInput, setSearchEmailInput] = useState<string>('');
 
   const [selectedUserType, setSelectedUserType] = useState<string>('');
@@ -103,4 +103,4 @@ const VipRenderUsers = ({ users, onCancel, onSave, onEdit, selectedUserId, onDel
   );
 };
 
-export default VipRenderUsers;
+export default UserTable;

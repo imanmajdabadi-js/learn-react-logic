@@ -11,7 +11,7 @@ export const InitialState = [
   {
     email: 'Ali@gmail.com',
     id: '2',
-    isAdmin: false,
+    isAdmin: true,
     isVip: false,
     name: 'Ali',
   },
@@ -66,7 +66,7 @@ export const InitialState = [
   {
     email: 'Akbar@gmail.com',
     id: '9',
-    isAdmin: false,
+    isAdmin: true,
     isVip: true,
     name: 'Akbar',
   },
@@ -74,7 +74,7 @@ export const InitialState = [
   {
     email: 'Ahmad@gmail.com',
     id: '10',
-    isAdmin: false,
+    isAdmin: true,
     isVip: false,
     name: 'Ahmad',
   },

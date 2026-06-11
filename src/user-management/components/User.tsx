@@ -27,6 +27,7 @@ const User = ({ user, onDelete, onEdit, isEditing, onSave, onCancel, index }: Pr
     const checked = e.target.checked;
     setCheckedIsVip(checked);
   };
+
   const handleCancel = () => {
     setCheckedIsVip(user.isVip);
     setCheckedIsAdmin(user.isAdmin);
@@ -38,88 +39,121 @@ const User = ({ user, onDelete, onEdit, isEditing, onSave, onCancel, index }: Pr
       setIsOpen((prev) => !prev);
     }
   };
-  return (
-    <>
-      <tr className="text-center border!">
-        <td className="p-2 border-r">
-          {isOpen ? (
-            <IoIosArrowUp onClick={toggleOpen} className="mx-auto" size={18} />
-          ) : (
-            <IoIosArrowDown onClick={toggleOpen} className="mx-auto" size={18} />
-          )}
-        </td>
 
-        <td className="p-1 border-r">{index}</td>
-        {!isEditing ? (
-          <td className="border-r text-sm">
-            {user.isVip ? (
-              <FaStar size={18} className="m-auto" color="#FFD700" />
-            ) : (
-              <FiUser size={18} className="m-auto" />
-            )}
-          </td>
-        ) : (
-          <td className="border-r p-2 text-sm">
-            <input
-              onChange={handleChangeIsVip}
-              checked={isEditing ? checkedIsVip : user.isVip}
-              type="checkbox"
-            />
-          </td>
-        )}
-        <td className="border-r p-2 text-sm">{user.name}</td>
-        <td className="border-r text-sm p-2 w-48">{user.email}</td>
-        {!isEditing ? (
-          <td className="border-r text-sm">{user.isAdmin ? 'Yes' : 'No'}</td>
-        ) : (
-          <td className="border-r p-2">
-            <input
-              onChange={handleChangeIsAdmin}
-              checked={isEditing ? checkedIsAdmin : user.isAdmin}
-              type="checkbox"
-            />
-          </td>
-        )}
-        <td className="w-48 text-sm p-2">
-          {!isEditing ? (
-            <div className="flex items-center gap-4 justify-center ">
-              <button
-                onClick={() => onDelete(user.id)}
-                className="px-4 bg-red-600 rounded-md text-sm text-white py-1 cursor-pointer"
-              >
-                Delete
-              </button>
-              <button
-                onClick={() => onEdit(user.id)}
-                className="px-4 bg-green-700 rounded-md text-sm py-1 text-white cursor-pointer"
-              >
-                Edit
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-4 justify-center ">
-              <button
-                onClick={handleCancel}
-                className="px-4 bg-blue-400 rounded-md text-sm py-1 text-white cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => onSave(user.id, checkedIsAdmin, checkedIsVip)}
-                className="px-4 bg-violet-700 rounded-md text-sm py-1 text-white cursor-pointer"
-              >
-                Save
-              </button>
-            </div>
-          )}
-        </td>
-      </tr>
+  function vipUsers() {
+    if (user.isVip && user.isAdmin) {
+      return (
+        <div className="flex items-center gap-2 justify-center">
+          <FaStar size={18} color="#FFD700" />
+          <FaStar size={18} color="#FFD700" />
+        </div>
+      );
+    } else if (user.isVip) {
+      return <FaStar size={18} className="m-auto" color="#FFD700" />;
+    } else {
+      return <FiUser size={18} className="m-auto" />;
+    }
+  }
 
-      {isOpen && user.note && (
+  function openCloseNoteCell() {
+    if (isOpen) {
+      return <IoIosArrowUp onClick={toggleOpen} className="mx-auto" size={18} />;
+    } else {
+      return <IoIosArrowDown onClick={toggleOpen} className="mx-auto" size={18} />;
+    }
+  }
+
+  function checkedVipUsers() {
+    if (!isEditing) {
+      return <td className="border-r text-sm">{vipUsers()}</td>;
+    } else {
+      return (
+        <td className="border-r p-2 text-sm">
+          <input
+            onChange={handleChangeIsVip}
+            checked={isEditing ? checkedIsVip : user.isVip}
+            type="checkbox"
+          />
+        </td>
+      );
+    }
+  }
+
+  function checkedAdminUsers() {
+    if (!isEditing) {
+      return <td className="border-r text-sm">{user.isAdmin ? 'Admin' : 'User'}</td>;
+    } else {
+      return (
+        <td className="border-r p-2">
+          <input
+            onChange={handleChangeIsAdmin}
+            checked={isEditing ? checkedIsAdmin : user.isAdmin}
+            type="checkbox"
+          />
+        </td>
+      );
+    }
+  }
+
+  function editingMode() {
+    if (!isEditing) {
+      return (
+        <div className="flex items-center gap-4 justify-center ">
+          <button
+            onClick={() => onDelete(user.id)}
+            className="px-4 bg-red-600 rounded-md text-sm text-white py-1 cursor-pointer"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => onEdit(user.id)}
+            className="px-4 bg-green-700 rounded-md text-sm py-1 text-white cursor-pointer"
+          >
+            Edit
+          </button>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex items-center gap-4 justify-center ">
+          <button
+            onClick={handleCancel}
+            className="px-4 bg-blue-400 rounded-md text-sm py-1 text-white cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onSave(user.id, checkedIsAdmin, checkedIsVip)}
+            className="px-4 bg-violet-700 rounded-md text-sm py-1 text-white cursor-pointer"
+          >
+            Save
+          </button>
+        </div>
+      );
+    }
+  }
+
+  function showUserHaseNote() {
+    if (isOpen && user.note) {
+      return (
         <tr>
           <td colSpan={7}>{user.note}</td>
         </tr>
-      )}
+      );
+    }
+  }
+  return (
+    <>
+      <tr className="text-center border!">
+        <td className="p-2 border-r">{openCloseNoteCell()}</td>
+        <td className="p-1 border-r">{index}</td>
+        {checkedVipUsers()}
+        <td className="border-r p-2 text-sm">{user.name}</td>
+        <td className="border-r text-sm p-2 w-48">{user.email}</td>
+        {checkedAdminUsers()}
+        <td className="w-48 text-sm p-2">{editingMode()}</td>
+      </tr>
+      {showUserHaseNote()}
     </>
   );
 };
