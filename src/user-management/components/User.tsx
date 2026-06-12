@@ -12,12 +12,24 @@ interface Props {
   onSave: (userId: string, checkedIsAdmin: boolean, checkedIsVip: boolean) => void;
   onCancel: () => void;
   index?: number;
+  selectedUserId: string | null;
+  onClick: (userId: string) => void;
 }
-const User = ({ user, onDelete, onEdit, isEditing, onSave, onCancel, index }: Props) => {
+const User = ({
+  user,
+  onDelete,
+  onEdit,
+  isEditing,
+  onSave,
+  onCancel,
+  index,
+  selectedUserId,
+  onClick,
+}: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [checkedIsVip, setCheckedIsVip] = useState<boolean>(user.isVip);
   const [checkedIsAdmin, setCheckedIsAdmin] = useState<boolean>(user.isAdmin);
-
+  // const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const handleChangeIsAdmin = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setCheckedIsAdmin(checked);
@@ -28,7 +40,8 @@ const User = ({ user, onDelete, onEdit, isEditing, onSave, onCancel, index }: Pr
     setCheckedIsVip(checked);
   };
 
-  const handleCancel = () => {
+  const handleCancel = (e: React.SyntheticEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setCheckedIsVip(user.isVip);
     setCheckedIsAdmin(user.isAdmin);
     onCancel();
@@ -144,7 +157,10 @@ const User = ({ user, onDelete, onEdit, isEditing, onSave, onCancel, index }: Pr
   }
   return (
     <>
-      <tr className="text-center border!">
+      <tr
+        onClick={() => onClick(user.id)}
+        className={`text-center border! hover:bg-gray-300 ${user.id === selectedUserId ? 'bg-gray-300' : ''} `}
+      >
         <td className="p-2 border-r">{openCloseNoteCell()}</td>
         <td className="p-1 border-r">{index}</td>
         {checkedVipUsers()}

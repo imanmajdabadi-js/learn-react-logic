@@ -11,8 +11,17 @@ interface Props {
   onEdit: (userId: string) => void;
   selectedUserId: string | null;
   onDelete: (userId: string) => void;
+  onClick: (userId: string) => void;
 }
-const UserTable = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }: Props) => {
+const UserTable = ({
+  users,
+  onCancel,
+  onSave,
+  onEdit,
+  selectedUserId,
+  onDelete,
+  onClick,
+}: Props) => {
   const [searchNote, setSearchNote] = useState<string>('');
 
   const [searchEmailInput, setSearchEmailInput] = useState<string>('');
@@ -54,11 +63,15 @@ const UserTable = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }
       user.email.toLowerCase().includes(searchEmail.toLowerCase())
     );
 
-    if (searchNote) {
-      searchResult = searchResult.filter((user) =>
-        user.note?.toLowerCase().includes(searchNote.toLowerCase())
-      );
-    }
+    searchResult = searchResult.filter((user) => {
+      if (user.note) {
+        return user.note?.toLowerCase().includes(searchNote.toLowerCase());
+      } else if (!searchNote) {
+        return true;
+      } else {
+        return false;
+      }
+    });
 
     if (type === 'Vip') {
       searchResult = searchResult.filter((user) => user.isVip);
@@ -104,6 +117,8 @@ const UserTable = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }
           {usersToDisplay.map((user, index) => {
             return (
               <User
+                onClick={onClick}
+                selectedUserId={selectedUserId}
                 index={index + 1}
                 onCancel={onCancel}
                 onSave={onSave}

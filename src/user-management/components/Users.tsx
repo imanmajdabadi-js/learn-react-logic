@@ -16,6 +16,10 @@ const Users = () => {
     setSelectedUserId(null);
   };
 
+  const handleClick = (userId: string) => {
+    setSelectedUserId(userId);
+  };
+
   const handleSave = (userId: string, checkedIsAdmin: boolean, checkedIsVip: boolean) => {
     setUsers((prev) => {
       return prev.map((user) => {
@@ -52,6 +56,7 @@ const Users = () => {
 
   return (
     <UserTable
+      onClick={handleClick}
       users={users}
       selectedUserId={selectedUserId}
       onSave={handleSave}
