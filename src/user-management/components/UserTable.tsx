@@ -12,6 +12,8 @@ interface Props {
   onDelete: (userId: string) => void;
 }
 const UserTable = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }: Props) => {
+  const [searchNote, setSearchNote] = useState<string>('');
+
   const [searchEmailInput, setSearchEmailInput] = useState<string>('');
 
   const [selectedUserType, setSelectedUserType] = useState<string>('');
@@ -34,16 +36,29 @@ const UserTable = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }
   //   }
   // });
 
-  const handleButtonSearch = (searchEmail: string, typeSelect: string, roleSelect: string) => {
+  const handleButtonSearch = (
+    searchEmail: string,
+    typeSelect: string,
+    roleSelect: string,
+    searchNote: string
+  ) => {
     setSearchEmailInput(searchEmail);
     setSelectedRole(roleSelect);
     setSelectedUserType(typeSelect);
+    setSearchNote(searchNote);
   };
 
-  function search(type: string, searchEmail: string, role: string): UserType[] {
+  function search(type: string, searchEmail: string, role: string, searchNote: string): UserType[] {
     let searchResult = newUsers.filter((user) =>
       user.email.toLowerCase().includes(searchEmail.toLowerCase())
     );
+
+    if (searchNote) {
+      searchResult = searchResult.filter((user) =>
+        user.note?.toLowerCase().includes(searchNote.toLowerCase())
+      );
+    }
+
     if (type === 'Vip') {
       searchResult = searchResult.filter((user) => user.isVip);
     } else if (type === 'Normal') {
@@ -58,7 +73,7 @@ const UserTable = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }
 
     return searchResult;
   }
-  const usersToDisplay = search(selectedUserType, searchEmailInput, selectedRole);
+  const usersToDisplay = search(selectedUserType, searchEmailInput, selectedRole, searchNote);
 
   return (
     <>

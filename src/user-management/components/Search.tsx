@@ -4,26 +4,31 @@ import { SelectRoleUsers, SelectTypeUsers } from './DropDownItems';
 
 interface Props {
   searchEmail: string;
-  onClick: (inputValue: string, typeSelect: string, roleSelect: string) => void;
+  onClick: (email: string, typeSelect: string, roleSelect: string, note: string) => void;
   selectedUserType: string;
   selectedRole: string;
 }
 
 const Search = ({ onClick }: Props) => {
-  const [text, setText] = useState<string>('');
+  const [searchEmail, setSearchEmail] = useState<string>('');
+  const [searchNote, setSearchNote] = useState<string>('');
 
   const [selectedUserType, setSelectedUserType] = useState<string>('');
 
   const [selectedRole, setSelectedRole] = useState<string>('');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
+  const handleSearchEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchEmail(e.target.value);
+  };
+
+  const handleSearchNote = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchNote(e.target.value);
   };
 
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    onClick(text, selectedUserType, selectedRole);
+    onClick(searchEmail, selectedUserType, selectedRole, searchNote);
   };
 
   const handleSelectRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -36,6 +41,15 @@ const Search = ({ onClick }: Props) => {
 
   return (
     <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2">
+        <label htmlFor="">Note :</label>
+        <input
+          onChange={handleSearchNote}
+          value={searchNote}
+          className="border rounded-md"
+          type="text"
+        />
+      </div>
       <DropDown
         value={selectedUserType}
         onSelect={handleSelecType}
@@ -50,11 +64,11 @@ const Search = ({ onClick }: Props) => {
         dropDown={SelectRoleUsers}
       />
       <div className="flex items-center gap-2">
-        <label htmlFor="">Email:</label>
+        <label htmlFor="">Email :</label>
         <input
           className="border rounded-md text-center"
-          value={text}
-          onChange={handleInputChange}
+          value={searchEmail}
+          onChange={handleSearchEmail}
           type="text"
         />
         <button
