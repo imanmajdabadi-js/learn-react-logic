@@ -133,7 +133,7 @@ const User = ({ user, onDelete, onEdit, isEditing, onSave, onCancel, index }: Pr
     }
   }
 
-  function showUserHaseNote() {
+  function showUsersHaseNote() {
     if (isOpen && user.note) {
       return (
         <tr>
@@ -153,7 +153,7 @@ const User = ({ user, onDelete, onEdit, isEditing, onSave, onCancel, index }: Pr
         {checkedAdminUsers()}
         <td className="w-48 text-sm p-2">{editingMode()}</td>
       </tr>
-      {showUserHaseNote()}
+      {showUsersHaseNote()}
     </>
   );
 };

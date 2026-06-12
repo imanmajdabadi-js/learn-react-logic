@@ -4,5 +4,5 @@ export interface UserType {
   email: string;
   isAdmin: boolean;
   isVip: boolean;
-  note: string;
+  note?: string;
 }

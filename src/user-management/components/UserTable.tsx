@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FaSort } from 'react-icons/fa6';
 import type { UserType } from '../types';
 import Search from './Search';
 import User from './User';
@@ -92,7 +93,9 @@ const UserTable = ({ users, onCancel, onSave, onEdit, selectedUserId, onDelete }
             <th className="p-2 w-20 border-r">Row</th>
             <th className="border-r p-2">Vip</th>
             <th className="border-r p-2">Name</th>
-            <th className="border-r p-2 w-48">Email</th>
+            <th className="border-r  w-48">
+              Email <FaSort size={18} />
+            </th>
             <th className="border-r p-2">IsAdmin</th>
             <th className="w-48 p-2 border-r">Actions</th>
           </tr>
