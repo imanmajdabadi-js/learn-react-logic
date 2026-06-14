@@ -12,15 +12,38 @@ const Users = () => {
     setSelectedUserId(userId);
   };
 
+  const handleAddRow = () => {
+    const newUser: UserType = {
+      email: '',
+      id: Date.now().toString(),
+      isAdmin: false,
+      isVip: false,
+      name: '',
+      note: '',
+    };
+    setSelectedUserId(newUser.id);
+    setUsers([...users, newUser]);
+  };
+
   const handleCancel = () => {
     setSelectedUserId(null);
   };
 
-  const handleClick = (userId: string) => {
+  const handleClick = (userId: string, e: React.ChangeEvent<HTMLElement>) => {
+    e.stopPropagation();
     setSelectedUserId(userId);
   };
 
-  const handleSave = (userId: string, checkedIsAdmin: boolean, checkedIsVip: boolean) => {
+  const handleSave = (
+    userId: string,
+    checkedIsAdmin: boolean,
+    checkedIsVip: boolean,
+    name: string,
+    email: string
+  ) => {
+    if (name === '' || email === '') {
+      return;
+    }
     setUsers((prev) => {
       return prev.map((user) => {
         if (user.id === userId) {
@@ -28,12 +51,15 @@ const Users = () => {
             ...user,
             isAdmin: checkedIsAdmin,
             isVip: checkedIsVip,
+            email: email === '' ? user.email : email,
+            name: name === '' ? user.name : name,
           };
         } else {
           return user;
         }
       });
     });
+
     setSelectedUserId(null);
   };
 
@@ -56,6 +82,7 @@ const Users = () => {
 
   return (
     <UserTable
+      onAddRow={handleAddRow}
       onClick={handleClick}
       users={users}
       selectedUserId={selectedUserId}

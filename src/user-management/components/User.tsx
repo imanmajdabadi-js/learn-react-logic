@@ -9,11 +9,17 @@ interface Props {
   onDelete: (userId: string) => void;
   onEdit: (userId: string) => void;
   isEditing: boolean;
-  onSave: (userId: string, checkedIsAdmin: boolean, checkedIsVip: boolean) => void;
+  onSave: (
+    userId: string,
+    checkedIsAdmin: boolean,
+    checkedIsVip: boolean,
+    name: string,
+    email: string
+  ) => void;
   onCancel: () => void;
   index?: number;
   selectedUserId: string | null;
-  onClick: (userId: string) => void;
+  onClick: (userId: string, e: React.ChangeEvent<HTMLElement>) => void;
 }
 const User = ({
   user,
@@ -27,12 +33,26 @@ const User = ({
   onClick,
 }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const [checkedIsVip, setCheckedIsVip] = useState<boolean>(user.isVip);
+
   const [checkedIsAdmin, setCheckedIsAdmin] = useState<boolean>(user.isAdmin);
-  // const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const [changeName, setChangeName] = useState<string>(user.name);
+
+  const [changeEmail, setChangeEmil] = useState<string>(user.email);
+
   const handleChangeIsAdmin = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setCheckedIsAdmin(checked);
+  };
+
+  const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChangeEmil(e.target.value);
+  };
+
+  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChangeName(e.target.value);
   };
 
   const handleChangeIsVip = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,10 +64,13 @@ const User = ({
     e.stopPropagation();
     setCheckedIsVip(user.isVip);
     setCheckedIsAdmin(user.isAdmin);
+    setChangeName(user.name);
+    setChangeEmil(user.email);
     onCancel();
   };
 
-  const toggleOpen = () => {
+  const toggleOpen = (e: React.MouseEvent<SVGAElement>) => {
+    e.stopPropagation();
     if (user.note) {
       setIsOpen((prev) => !prev);
     }
@@ -76,76 +99,6 @@ const User = ({
     }
   }
 
-  function checkedVipUsers() {
-    if (!isEditing) {
-      return <td className="border-r text-sm">{vipUsers()}</td>;
-    } else {
-      return (
-        <td className="border-r p-2 text-sm">
-          <input
-            onChange={handleChangeIsVip}
-            checked={isEditing ? checkedIsVip : user.isVip}
-            type="checkbox"
-          />
-        </td>
-      );
-    }
-  }
-
-  function checkedAdminUsers() {
-    if (!isEditing) {
-      return <td className="border-r text-sm">{user.isAdmin ? 'Admin' : 'User'}</td>;
-    } else {
-      return (
-        <td className="border-r p-2">
-          <input
-            onChange={handleChangeIsAdmin}
-            checked={isEditing ? checkedIsAdmin : user.isAdmin}
-            type="checkbox"
-          />
-        </td>
-      );
-    }
-  }
-
-  function editingMode() {
-    if (!isEditing) {
-      return (
-        <div className="flex items-center gap-4 justify-center ">
-          <button
-            onClick={() => onDelete(user.id)}
-            className="px-4 bg-red-600 rounded-md text-sm text-white py-1 cursor-pointer"
-          >
-            Delete
-          </button>
-          <button
-            onClick={() => onEdit(user.id)}
-            className="px-4 bg-green-700 rounded-md text-sm py-1 text-white cursor-pointer"
-          >
-            Edit
-          </button>
-        </div>
-      );
-    } else {
-      return (
-        <div className="flex items-center gap-4 justify-center ">
-          <button
-            onClick={handleCancel}
-            className="px-4 bg-blue-400 rounded-md text-sm py-1 text-white cursor-pointer"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => onSave(user.id, checkedIsAdmin, checkedIsVip)}
-            className="px-4 bg-violet-700 rounded-md text-sm py-1 text-white cursor-pointer"
-          >
-            Save
-          </button>
-        </div>
-      );
-    }
-  }
-
   function showUsersHaseNote() {
     if (isOpen && user.note) {
       return (
@@ -155,19 +108,103 @@ const User = ({
       );
     }
   }
+
+  const handleClickRow = (e: React.ChangeEvent<HTMLElement>) => {
+    e.stopPropagation();
+    onClick(user.id, e);
+  };
+
   return (
     <>
       <tr
-        onClick={() => onClick(user.id)}
+        onClick={() => handleClickRow}
         className={`text-center border! hover:bg-gray-300 ${user.id === selectedUserId ? 'bg-gray-300' : ''} `}
       >
         <td className="p-2 border-r">{openCloseNoteCell()}</td>
         <td className="p-1 border-r">{index}</td>
-        {checkedVipUsers()}
-        <td className="border-r p-2 text-sm">{user.name}</td>
-        <td className="border-r text-sm p-2 w-48">{user.email}</td>
-        {checkedAdminUsers()}
-        <td className="w-48 text-sm p-2">{editingMode()}</td>
+        {!isEditing ? (
+          <td className="border-r text-sm">{vipUsers()}</td>
+        ) : (
+          <td className="border-r p-2 text-sm">
+            <input
+              onChange={handleChangeIsVip}
+              checked={isEditing ? checkedIsVip : user.isVip}
+              type="checkbox"
+            />
+          </td>
+        )}
+        {!isEditing ? (
+          <td className="border-r p-2 text-sm">{user.name}</td>
+        ) : (
+          <td className="border-r p-2 text-sm ">
+            <input
+              autoFocus
+              value={changeName}
+              onChange={handleChangeName}
+              className="rounded-md text-center  border w-16"
+              type="text"
+            />
+          </td>
+        )}
+
+        {!isEditing ? (
+          <td className="border-r p-2 text-sm">{user.email}</td>
+        ) : (
+          <td className="border-r p-2 text-sm">
+            <input
+              value={changeEmail}
+              onChange={handleChangeEmail}
+              className="rounded-md text-center border w-40 p-2"
+              type="text"
+            />
+          </td>
+        )}
+        {!isEditing ? (
+          <td className="border-r text-sm">{user.isAdmin ? 'Admin' : 'User'}</td>
+        ) : (
+          <td className="border-r p-2">
+            <input
+              onChange={handleChangeIsAdmin}
+              checked={isEditing ? checkedIsAdmin : user.isAdmin}
+              type="checkbox"
+            />
+          </td>
+        )}
+        <td className="w-48 text-sm p-2">
+          {!isEditing ? (
+            <div className="flex items-center gap-4 justify-center ">
+              <button
+                onClick={() => onDelete(user.id)}
+                className="px-4 bg-red-600 rounded-md text-sm text-white py-1 cursor-pointer"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => onEdit(user.id)}
+                className="px-4 bg-green-700 rounded-md text-sm py-1 text-white cursor-pointer"
+              >
+                Edit
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4 justify-center ">
+              <button
+                onClick={handleCancel}
+                className="px-4 bg-blue-400 rounded-md text-sm py-1 text-white cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() =>
+                  onSave(user.id, checkedIsAdmin, checkedIsVip, changeName, changeEmail)
+                }
+                className="px-4 bg-violet-700 rounded-md text-sm py-1 text-white cursor-pointer"
+              >
+                Save
+              </button>
+            </div>
+          )}
+        </td>
       </tr>
       {showUsersHaseNote()}
     </>

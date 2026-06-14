@@ -7,11 +7,18 @@ import User from './User';
 interface Props {
   users: UserType[];
   onCancel: () => void;
-  onSave: (userId: string, checkedIsAdmin: boolean, checkedIsVip: boolean) => void;
+  onSave: (
+    userId: string,
+    checkedIsAdmin: boolean,
+    checkedIsVip: boolean,
+    name: string,
+    email: string
+  ) => void;
   onEdit: (userId: string) => void;
   selectedUserId: string | null;
   onDelete: (userId: string) => void;
-  onClick: (userId: string) => void;
+  onClick: (userId: string, e: React.ChangeEvent<HTMLElement>) => void;
+  onAddRow: () => void;
 }
 const UserTable = ({
   users,
@@ -21,6 +28,7 @@ const UserTable = ({
   selectedUserId,
   onDelete,
   onClick,
+  onAddRow,
 }: Props) => {
   const [searchNote, setSearchNote] = useState<string>('');
 
@@ -46,6 +54,9 @@ const UserTable = ({
   //   }
   // });
 
+  const handleAddRow = () => {
+    onAddRow();
+  };
   const handleButtonSearch = (
     searchEmail: string,
     typeSelect: string,
@@ -88,7 +99,6 @@ const UserTable = ({
     return searchResult;
   }
   const usersToDisplay = search(selectedUserType, searchEmailInput, selectedRole, searchNote);
-
   return (
     <>
       <div className="flex items-center gap-4">
@@ -130,6 +140,16 @@ const UserTable = ({
               />
             );
           })}
+          <tr>
+            <td>
+              <button
+                onClick={handleAddRow}
+                className="cursor-pointer bg-blue-600 rounded-md py-1 px-6 text-white text-sm"
+              >
+                Add
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </>
