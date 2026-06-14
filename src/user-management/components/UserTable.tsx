@@ -6,7 +6,7 @@ import User from './User';
 
 interface Props {
   users: UserType[];
-  onCancel: () => void;
+  onCancel: (userId: string) => void;
   onSave: (
     userId: string,
     checkedIsAdmin: boolean,
@@ -18,8 +18,9 @@ interface Props {
   onEdit: (userId: string) => void;
   selectedUserId: string | null;
   onDelete: (userId: string) => void;
-  onClick: (userId: string, e: React.ChangeEvent<HTMLElement>) => void;
+  onClick: (userId: string) => void;
   onAddRow: () => void;
+  // onSortByEmail: () => void;
 }
 const UserTable = ({
   users,
@@ -30,6 +31,7 @@ const UserTable = ({
   onDelete,
   onClick,
   onAddRow,
+  // onSortByEmail,
 }: Props) => {
   const [searchNote, setSearchNote] = useState<string>('');
 
@@ -39,21 +41,7 @@ const UserTable = ({
 
   const [selectedRole, setSelectedRole] = useState<string>('');
 
-  const vipUsers = users.filter((user) => user.isVip);
-
-  const normalUsers = users.filter((user) => !user.isVip);
-
-  const newUsers = [...vipUsers, ...normalUsers];
-
-  // const newArr = [...users].sort((a, b) => {
-  //   if (a.isVip === b.isVip) {
-  //     return 0;
-  //   } else if (a.isVip) {
-  //     return -1;
-  //   } else {
-  //     return 1;
-  //   }
-  // });
+  const [sortByEmailEnabled, setSortByEmailEnabled] = useState<boolean>(false);
 
   const handleAddRow = () => {
     onAddRow();
@@ -70,8 +58,22 @@ const UserTable = ({
     setSearchNote(searchNote);
   };
 
+  const handleSort = () => {
+    setSortByEmailEnabled((prev) => !prev);
+  };
+
+  function sort() {
+    if (sortByEmailEnabled) {
+      return [...users].sort((a, b) => {
+        return a.email.localeCompare(b.email);
+      });
+    }
+    return users;
+  }
+
   function search(type: string, searchEmail: string, role: string, searchNote: string): UserType[] {
-    let searchResult = newUsers.filter((user) =>
+    const sortedUsers = sort();
+    let searchResult = sortedUsers.filter((user) =>
       user.email.toLowerCase().includes(searchEmail.toLowerCase())
     );
 
@@ -118,7 +120,7 @@ const UserTable = ({
             <th className="border-r p-2">Vip</th>
             <th className="border-r p-2">Name</th>
             <th className="border-r  w-48">
-              Email <FaSort size={18} />
+              Email <FaSort onClick={handleSort} size={18} />
             </th>
             <th className="border-r p-2">IsAdmin</th>
             <th className="w-48 p-2 border-r">Actions</th>

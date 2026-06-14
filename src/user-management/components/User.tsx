@@ -17,10 +17,10 @@ interface Props {
     email: string,
     note: string
   ) => void;
-  onCancel: () => void;
+  onCancel: (userId: string) => void;
   index?: number;
   selectedUserId: string | null;
-  onClick: (userId: string, e: React.ChangeEvent<HTMLElement>) => void;
+  onClick: (userId: string) => void;
 }
 const User = ({
   user,
@@ -73,7 +73,7 @@ const User = ({
     setCheckedIsAdmin(user.isAdmin);
     setChangeName(user.name);
     setChangeEmil(user.email);
-    onCancel();
+    onCancel(user.id);
   };
 
   const toggleOpen = (e: React.MouseEvent<SVGAElement>) => {
@@ -118,7 +118,7 @@ const User = ({
 
   const handleClickRow = (e: React.ChangeEvent<HTMLElement>) => {
     e.stopPropagation();
-    onClick(user.id, e);
+    onClick(user.id);
   };
 
   return (

@@ -4,6 +4,16 @@ import type { UserType } from '../types';
 import { InitialState } from './InitialState';
 import UserTable from './UserTable';
 
+function idGenerator() {
+  let id = 100;
+  return function generate() {
+    id++;
+    return id.toString();
+  };
+}
+
+const generate = idGenerator();
+
 const Users = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [users, setUsers] = useState<UserType[]>(InitialState);
@@ -15,22 +25,29 @@ const Users = () => {
   const handleAddRow = () => {
     const newUser: UserType = {
       email: '',
-      id: Date.now().toString(),
-      isAdmin: false,
-      isVip: false,
+      id: generate(),
+      isAdmin: true,
+      isVip: true,
       name: '',
       note: '',
     };
+
     setSelectedUserId(newUser.id);
     setUsers([...users, newUser]);
   };
 
-  const handleCancel = () => {
+  const handleCancel = (userId: string) => {
+    const selectedUser = users.find((user) => user.id === userId);
+    if (selectedUser?.email === '' && selectedUser.name === '') {
+      const usersTemp = users.filter((user) => user.id !== userId);
+      setUsers(usersTemp);
+    }
+
     setSelectedUserId(null);
   };
 
-  const handleClick = (userId: string, e: React.ChangeEvent<HTMLElement>) => {
-    e.stopPropagation();
+  const handleClick = (userId: string) => {
+    // e.stopPropagation();
     setSelectedUserId(userId);
   };
 
@@ -84,6 +101,7 @@ const Users = () => {
 
   return (
     <UserTable
+      // onSortByEmail={handleSortByEmail}
       onAddRow={handleAddRow}
       onClick={handleClick}
       users={users}
