@@ -12,7 +12,8 @@ interface Props {
     checkedIsAdmin: boolean,
     checkedIsVip: boolean,
     name: string,
-    email: string
+    email: string,
+    note: string
   ) => void;
   onEdit: (userId: string) => void;
   selectedUserId: string | null;

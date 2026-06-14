@@ -39,7 +39,8 @@ const Users = () => {
     checkedIsAdmin: boolean,
     checkedIsVip: boolean,
     name: string,
-    email: string
+    email: string,
+    note: string
   ) => {
     if (name === '' || email === '') {
       return;
@@ -53,6 +54,7 @@ const Users = () => {
             isVip: checkedIsVip,
             email: email === '' ? user.email : email,
             name: name === '' ? user.name : name,
+            note: note === '' ? user.note : note,
           };
         } else {
           return user;

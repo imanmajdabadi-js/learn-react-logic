@@ -14,7 +14,8 @@ interface Props {
     checkedIsAdmin: boolean,
     checkedIsVip: boolean,
     name: string,
-    email: string
+    email: string,
+    note: string
   ) => void;
   onCancel: () => void;
   index?: number;
@@ -40,7 +41,13 @@ const User = ({
 
   const [changeName, setChangeName] = useState<string>(user.name);
 
+  const [changeNote, setChangeNote] = useState<string>(user.note!);
+
   const [changeEmail, setChangeEmil] = useState<string>(user.email);
+
+  const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChangeNote(e.target.value);
+  };
 
   const handleChangeIsAdmin = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
@@ -196,7 +203,7 @@ const User = ({
               </button>
               <button
                 onClick={() =>
-                  onSave(user.id, checkedIsAdmin, checkedIsVip, changeName, changeEmail)
+                  onSave(user.id, checkedIsAdmin, checkedIsVip, changeName, changeEmail, changeNote)
                 }
                 className="px-4 bg-violet-700 rounded-md text-sm py-1 text-white cursor-pointer"
               >
@@ -206,7 +213,20 @@ const User = ({
           )}
         </td>
       </tr>
-      {showUsersHaseNote()}
+      {!isEditing ? (
+        showUsersHaseNote()
+      ) : (
+        <tr>
+          <td colSpan={7}>
+            <input
+              value={changeNote}
+              onChange={handleNoteChange}
+              className="rounded-md text-center border w-full p-2 "
+              type="text"
+            />
+          </td>
+        </tr>
+      )}
     </>
   );
 };
