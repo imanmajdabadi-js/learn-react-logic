@@ -23,4 +23,9 @@ export const SelectRoleUsers = [
     id: '2',
     value: 'Admin',
   },
+
+  {
+    id: '3',
+    value: 'All',
+  },
 ];

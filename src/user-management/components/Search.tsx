@@ -1,42 +1,23 @@
 import { useState } from 'react';
+import { defaultFilters, type UserFilters } from '../../utils/filterUsers';
 import DropDown from './DropDown';
 import { SelectRoleUsers, SelectTypeUsers } from './DropDownItems';
 
 interface Props {
-  searchEmail: string;
-  onClick: (email: string, typeSelect: string, roleSelect: string, note: string) => void;
-  selectedUserType: string;
-  selectedRole: string;
+  onClick: (filters: UserFilters) => void;
 }
 
 const Search = ({ onClick }: Props) => {
-  const [searchEmail, setSearchEmail] = useState<string>('');
-  const [searchNote, setSearchNote] = useState<string>('');
+  const [filters, setFilters] = useState<UserFilters>(defaultFilters);
 
-  const [selectedUserType, setSelectedUserType] = useState<string>('');
-
-  const [selectedRole, setSelectedRole] = useState<string>('');
-
-  const handleSearchEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchEmail(e.target.value);
-  };
-
-  const handleSearchNote = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchNote(e.target.value);
+  const handleChange = <K extends keyof UserFilters>(key: K, value: UserFilters[K]) => {
+    setFilters({ ...filters, [key]: value });
   };
 
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    onClick(searchEmail, selectedUserType, selectedRole, searchNote);
-  };
-
-  const handleSelectRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedRole(e.target.value);
-  };
-
-  const handleSelecType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedUserType(e.target.value);
+    onClick(filters);
   };
 
   return (
@@ -44,22 +25,22 @@ const Search = ({ onClick }: Props) => {
       <div className="flex items-center gap-2">
         <label htmlFor="">Note :</label>
         <input
-          onChange={handleSearchNote}
-          value={searchNote}
+          onChange={(e) => handleChange('note', e.target.value)}
+          value={filters.note}
           className="border rounded-md"
           type="text"
         />
       </div>
       <DropDown
-        value={selectedUserType}
-        onSelect={handleSelecType}
+        value={filters.type}
+        onSelect={(e) => handleChange('type', e.target.value as 'Vip' | 'Normal' | 'All')}
         titleLabel="SelectTypeUser"
         dropDown={SelectTypeUsers}
       />
 
       <DropDown
-        value={selectedRole}
-        onSelect={handleSelectRole}
+        value={filters.role}
+        onSelect={(e) => handleChange('role', e.target.value as 'Admin' | 'User' | 'All')}
         titleLabel="SelectRoleUser"
         dropDown={SelectRoleUsers}
       />
@@ -67,8 +48,8 @@ const Search = ({ onClick }: Props) => {
         <label htmlFor="">Email :</label>
         <input
           className="border rounded-md text-center"
-          value={searchEmail}
-          onChange={handleSearchEmail}
+          value={filters.email}
+          onChange={(e) => handleChange('email', e.target.value)}
           type="text"
         />
         <button

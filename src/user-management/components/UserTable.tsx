@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaSort } from 'react-icons/fa6';
+import { defaultFilters, search, type UserFilters } from '../../utils/filterUsers';
 import type { UserType } from '../types';
 import Search from './Search';
 import User from './User';
@@ -20,7 +21,6 @@ interface Props {
   onDelete: (userId: string) => void;
   onClick: (userId: string) => void;
   onAddRow: () => void;
-  // onSortByEmail: () => void;
 }
 const UserTable = ({
   users,
@@ -31,31 +31,16 @@ const UserTable = ({
   onDelete,
   onClick,
   onAddRow,
-  // onSortByEmail,
 }: Props) => {
-  const [searchNote, setSearchNote] = useState<string>('');
-
-  const [searchEmailInput, setSearchEmailInput] = useState<string>('');
-
-  const [selectedUserType, setSelectedUserType] = useState<string>('');
-
-  const [selectedRole, setSelectedRole] = useState<string>('');
+  const [filters, setFilters] = useState<UserFilters>(defaultFilters);
 
   const [sortByEmailEnabled, setSortByEmailEnabled] = useState<boolean>(false);
 
   const handleAddRow = () => {
     onAddRow();
   };
-  const handleButtonSearch = (
-    searchEmail: string,
-    typeSelect: string,
-    roleSelect: string,
-    searchNote: string
-  ) => {
-    setSearchEmailInput(searchEmail);
-    setSelectedRole(roleSelect);
-    setSelectedUserType(typeSelect);
-    setSearchNote(searchNote);
+  const handleButtonSearch = (filters: UserFilters) => {
+    setFilters(filters);
   };
 
   const handleSort = () => {
@@ -71,46 +56,11 @@ const UserTable = ({
     return users;
   }
 
-  function search(type: string, searchEmail: string, role: string, searchNote: string): UserType[] {
-    const sortedUsers = sort();
-    let searchResult = sortedUsers.filter((user) =>
-      user.email.toLowerCase().includes(searchEmail.toLowerCase())
-    );
-
-    searchResult = searchResult.filter((user) => {
-      if (user.note) {
-        return user.note?.toLowerCase().includes(searchNote.toLowerCase());
-      } else if (!searchNote) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-
-    if (type === 'Vip') {
-      searchResult = searchResult.filter((user) => user.isVip);
-    } else if (type === 'Normal') {
-      searchResult = searchResult.filter((user) => !user.isVip);
-    }
-
-    if (role === 'Admin') {
-      searchResult = searchResult.filter((user) => user.isAdmin);
-    } else if (role === 'User') {
-      searchResult = searchResult.filter((user) => !user.isAdmin);
-    }
-
-    return searchResult;
-  }
-  const usersToDisplay = search(selectedUserType, searchEmailInput, selectedRole, searchNote);
+  const usersToDisplay = search(users, filters);
   return (
     <>
       <div className="flex items-center gap-4">
-        <Search
-          selectedRole={selectedRole}
-          selectedUserType={selectedUserType}
-          onClick={handleButtonSearch}
-          searchEmail={searchEmailInput}
-        />
+        <Search onClick={handleButtonSearch} />
       </div>
       <table className="border w-3xl table-fixed">
         <thead>
