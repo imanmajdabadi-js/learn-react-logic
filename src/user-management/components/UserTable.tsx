@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FaSort } from 'react-icons/fa6';
 import { defaultFilters, search, type UserFilters } from '../../utils/filterUsers';
 import type { UserType } from '../types';
@@ -55,8 +55,13 @@ const UserTable = ({
     }
     return users;
   }
+  let usersToDisplay = useMemo(() => {
+    return search(users, filters);
+  }, [users, filters]);
 
-  const usersToDisplay = search(users, filters);
+  const sortusersByEmail = sort();
+  usersToDisplay = sortusersByEmail;
+
   return (
     <>
       <div className="flex items-center gap-4">
