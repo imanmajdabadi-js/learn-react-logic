@@ -1,54 +1,36 @@
 import { useConfirm } from '@omit/react-confirm-dialog';
-import { useState } from 'react';
-import type { UserType } from '../types';
-import { InitialState } from './InitialState';
+import { useReducer } from 'react';
+import { initialStateUsers, userReducer } from '../../reducers/UserReducer';
 import UserTable from './UserTable';
 
-function idGenerator() {
-  let id = 100;
-  return function generate() {
-    id++;
-    return id.toString();
-  };
-}
-
-const generate = idGenerator();
-
 const Users = () => {
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [users, setUsers] = useState<UserType[]>(InitialState);
+  const [users, dispatch] = useReducer(userReducer, initialStateUsers);
 
   const handleEdit = (userId: string) => {
-    setSelectedUserId(userId);
+    dispatch({
+      type: 'SELECT_USER',
+      id: userId,
+    });
   };
 
   const handleAddRow = () => {
-    const newUser: UserType = {
-      email: '',
-      id: generate(),
-      isAdmin: true,
-      isVip: true,
-      name: '',
-      note: '',
-    };
-
-    setSelectedUserId(newUser.id);
-    setUsers([...users, newUser]);
+    dispatch({
+      type: 'ADD_USER',
+    });
   };
 
   const handleCancel = (userId: string) => {
-    const selectedUser = users.find((user) => user.id === userId);
-    if (selectedUser?.email === '' && selectedUser.name === '') {
-      const usersTemp = users.filter((user) => user.id !== userId);
-      setUsers(usersTemp);
-    }
-
-    setSelectedUserId(null);
+    dispatch({
+      type: 'CANCEL_CLICk',
+      id: userId,
+    });
   };
 
   const handleClick = (userId: string) => {
-    // e.stopPropagation();
-    setSelectedUserId(userId);
+    dispatch({
+      type: 'SELECT_USER',
+      id: userId,
+    });
   };
 
   const handleSave = (
@@ -59,27 +41,15 @@ const Users = () => {
     email: string,
     note: string
   ) => {
-    if (name === '' || email === '') {
-      return;
-    }
-    setUsers((prev) => {
-      return prev.map((user) => {
-        if (user.id === userId) {
-          return {
-            ...user,
-            isAdmin: checkedIsAdmin,
-            isVip: checkedIsVip,
-            email: email === '' ? user.email : email,
-            name: name === '' ? user.name : name,
-            note: note === '' ? user.note : note,
-          };
-        } else {
-          return user;
-        }
-      });
+    dispatch({
+      type: 'SAVE_CLICK',
+      id: userId,
+      email: email,
+      name: name,
+      note: note,
+      isAdmin: checkedIsAdmin,
+      isVip: checkedIsVip,
     });
-
-    setSelectedUserId(null);
   };
 
   const confirm = useConfirm();
@@ -93,19 +63,18 @@ const Users = () => {
     });
 
     if (result) {
-      setUsers((prev) => {
-        return prev.filter((user) => user.id !== userId);
+      dispatch({
+        type: 'DELETE_USER',
+        id: userId,
       });
     }
   };
-
   return (
     <UserTable
-      // onSortByEmail={handleSortByEmail}
       onAddRow={handleAddRow}
       onClick={handleClick}
-      users={users}
-      selectedUserId={selectedUserId}
+      users={users.users}
+      selectedUserId={users.selectedUserId}
       onSave={handleSave}
       onCancel={handleCancel}
       onDelete={handleDeleteUser}

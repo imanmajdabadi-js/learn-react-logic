@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FaSort } from 'react-icons/fa6';
 import { defaultFilters, search, type UserFilters } from '../../utils/filterUsers';
 import type { UserType } from '../types';
@@ -47,20 +47,31 @@ const UserTable = ({
     setSortByEmailEnabled((prev) => !prev);
   };
 
-  function sort() {
-    if (sortByEmailEnabled) {
-      return [...users].sort((a, b) => {
-        return a.email.localeCompare(b.email);
-      });
-    }
-    return users;
-  }
-  let usersToDisplay = useMemo(() => {
-    return search(users, filters);
-  }, [users, filters]);
+  // function sort(array: UserType[]) {
+  //   if (sortByEmailEnabled) {
+  //     return [...array].sort((a, b) => {
+  //       return a.email.localeCompare(b.email);
+  //     });
+  //   }
+  //   return array;
+  // }
 
-  const sortusersByEmail = sort();
-  usersToDisplay = sortusersByEmail;
+  const sort = useCallback(
+    (array: UserType[]) => {
+      if (sortByEmailEnabled) {
+        return [...array].sort((a, b) => {
+          return a.email.localeCompare(b.email);
+        });
+      }
+      return array;
+    },
+    [sortByEmailEnabled]
+  );
+
+  const usersToDisplay = useMemo(() => {
+    const filterdSearch = search(users, filters);
+    return sort(filterdSearch);
+  }, [users, filters, sort]);
 
   return (
     <>

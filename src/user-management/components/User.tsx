@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { FaStar } from 'react-icons/fa6';
 import { FiUser } from 'react-icons/fi';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import { changeInputs, createInitialEditState } from '../../reducers/ChangeFieldReducer';
 import type { UserType } from '../types';
 
 interface Props {
@@ -35,44 +36,50 @@ const User = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const [checkedIsVip, setCheckedIsVip] = useState<boolean>(user.isVip);
-
-  const [checkedIsAdmin, setCheckedIsAdmin] = useState<boolean>(user.isAdmin);
-
-  const [changeName, setChangeName] = useState<string>(user.name);
-
-  const [changeNote, setChangeNote] = useState<string>(user.note!);
-
-  const [changeEmail, setChangeEmil] = useState<string>(user.email);
+  const [editState, dispatch] = useReducer(changeInputs, createInitialEditState(user));
 
   const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChangeNote(e.target.value);
+    dispatch({
+      type: 'CHANGE_INPUT',
+      field: 'note',
+      value: e.target.value,
+    });
   };
 
   const handleChangeIsAdmin = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    setCheckedIsAdmin(checked);
+    dispatch({
+      type: 'CHANGE_INPUT',
+      field: 'isAdmin',
+      value: e.target.value,
+    });
   };
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChangeEmil(e.target.value);
+    dispatch({
+      type: 'CHANGE_INPUT',
+      field: 'email',
+      value: e.target.value,
+    });
   };
 
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChangeName(e.target.value);
+    dispatch({
+      type: 'CHANGE_INPUT',
+      field: 'name',
+      value: e.target.value,
+    });
   };
 
   const handleChangeIsVip = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    setCheckedIsVip(checked);
+    dispatch({
+      type: 'CHANGE_INPUT',
+      field: 'isVip',
+      value: e.target.value,
+    });
   };
 
   const handleCancel = (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    setCheckedIsVip(user.isVip);
-    setCheckedIsAdmin(user.isAdmin);
-    setChangeName(user.name);
-    setChangeEmil(user.email);
     onCancel(user.id);
   };
 
@@ -135,7 +142,7 @@ const User = ({
           <td className="border-r p-2 text-sm">
             <input
               onChange={handleChangeIsVip}
-              checked={isEditing ? checkedIsVip : user.isVip}
+              checked={isEditing ? editState.draftUser.isVip : user.isVip}
               type="checkbox"
             />
           </td>
@@ -146,7 +153,7 @@ const User = ({
           <td className="border-r p-2 text-sm ">
             <input
               autoFocus
-              value={changeName}
+              value={editState.draftUser.name}
               onChange={handleChangeName}
               className="rounded-md text-center  border w-16"
               type="text"
@@ -159,7 +166,7 @@ const User = ({
         ) : (
           <td className="border-r p-2 text-sm">
             <input
-              value={changeEmail}
+              value={editState.draftUser.email}
               onChange={handleChangeEmail}
               className="rounded-md text-center border w-40 p-2"
               type="text"
@@ -172,7 +179,7 @@ const User = ({
           <td className="border-r p-2">
             <input
               onChange={handleChangeIsAdmin}
-              checked={isEditing ? checkedIsAdmin : user.isAdmin}
+              checked={isEditing ? editState.draftUser.isAdmin : user.isAdmin}
               type="checkbox"
             />
           </td>
@@ -203,7 +210,14 @@ const User = ({
               </button>
               <button
                 onClick={() =>
-                  onSave(user.id, checkedIsAdmin, checkedIsVip, changeName, changeEmail, changeNote)
+                  onSave(
+                    user.id,
+                    editState.draftUser.isAdmin,
+                    editState.draftUser.isVip,
+                    editState.draftUser.name,
+                    editState.draftUser.email,
+                    editState.draftUser.note!
+                  )
                 }
                 className="px-4 bg-violet-700 rounded-md text-sm py-1 text-white cursor-pointer"
               >
@@ -219,7 +233,7 @@ const User = ({
         <tr>
           <td colSpan={7}>
             <input
-              value={changeNote}
+              value={editState.draftUser.note}
               onChange={handleNoteChange}
               className="rounded-md text-center border w-full p-2 "
               type="text"
@@ -231,4 +245,4 @@ const User = ({
   );
 };
 
-export default User;
+export default React.memo(User);

@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { defaultFilters, type UserFilters } from '../../utils/filterUsers';
+import { useReducer } from 'react';
+import { defaultFilters, formSearchReducer } from '../../reducers/SearchFormReducer';
+import { type UserFilters } from '../../utils/filterUsers';
 import DropDown from './DropDown';
 import { SelectRoleUsers, SelectTypeUsers } from './DropDownItems';
 
@@ -8,10 +9,14 @@ interface Props {
 }
 
 const Search = ({ onClick }: Props) => {
-  const [filters, setFilters] = useState<UserFilters>(defaultFilters);
+  const [filters, dispatch] = useReducer(formSearchReducer, defaultFilters);
 
-  const handleChange = <K extends keyof UserFilters>(key: K, value: UserFilters[K]) => {
-    setFilters({ ...filters, [key]: value });
+  const handleChange = (fieldName: keyof UserFilters, value: string) => {
+    dispatch({
+      type: 'CHANGE_INPUT',
+      field: fieldName,
+      value: value,
+    });
   };
 
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -25,6 +30,7 @@ const Search = ({ onClick }: Props) => {
       <div className="flex items-center gap-2">
         <label htmlFor="">Note :</label>
         <input
+          name="note"
           onChange={(e) => handleChange('note', e.target.value)}
           value={filters.note}
           className="border rounded-md"
@@ -32,21 +38,24 @@ const Search = ({ onClick }: Props) => {
         />
       </div>
       <DropDown
+        name="type"
         value={filters.type}
-        onSelect={(e) => handleChange('type', e.target.value as 'Vip' | 'Normal' | 'All')}
+        onSelect={(e) => handleChange('type', e.target.value)}
         titleLabel="SelectTypeUser"
         dropDown={SelectTypeUsers}
       />
 
       <DropDown
+        name="role"
         value={filters.role}
-        onSelect={(e) => handleChange('role', e.target.value as 'Admin' | 'User' | 'All')}
+        onSelect={(e) => handleChange('role', e.target.value)}
         titleLabel="SelectRoleUser"
         dropDown={SelectRoleUsers}
       />
       <div className="flex items-center gap-2">
         <label htmlFor="">Email :</label>
         <input
+          name="email"
           className="border rounded-md text-center"
           value={filters.email}
           onChange={(e) => handleChange('email', e.target.value)}

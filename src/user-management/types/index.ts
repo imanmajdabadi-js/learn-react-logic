@@ -6,3 +6,9 @@ export interface UserType {
   isVip: boolean;
   note?: string;
 }
+
+export interface InputType {
+  key: string;
+  value: string | boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}

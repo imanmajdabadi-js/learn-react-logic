@@ -8,8 +8,9 @@ interface DropDownType {
   onSelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   titleLabel: string;
   value: string;
+  name: string;
 }
-const DropDown = ({ dropDown, onSelect, titleLabel, value }: DropDownType) => {
+const DropDown = ({ dropDown, onSelect, titleLabel, value, name }: DropDownType) => {
   return (
     <>
       <form className="flex items-center gap-2" action="">
@@ -20,7 +21,7 @@ const DropDown = ({ dropDown, onSelect, titleLabel, value }: DropDownType) => {
           value={value}
           onChange={onSelect}
           className="border text-sm p-1 rounded-md"
-          name="users"
+          name={name}
           id="users"
         >
           <option value="">Choose one</option>
